@@ -8,7 +8,7 @@ using namespace std;
 
 //插入节点
 template <class T>
-void centerQueue<T>::addNode(centerNode<T> *node, centerNode<T> *root)
+void centerHeap<T>::addNode(centerNode<T> *node, centerNode<T> *root)
 {
     node->left        = root->left;
     root->left->right = node;
@@ -17,7 +17,7 @@ void centerQueue<T>::addNode(centerNode<T> *node, centerNode<T> *root)
 }
 
 template <class T>
-void centerQueue<T>::insert(centerNode<T> *node)
+void centerHeap<T>::insert(centerNode<T> *node)
 {
     if (totalnum == 0)
         min = node;
@@ -31,7 +31,7 @@ void centerQueue<T>::insert(centerNode<T> *node)
 }
 
 template <class T>
-void centerQueue<T>::insert(T key)
+void centerHeap<T>::insert(T key)
 {
     centerNode<T> *node;
     node = new centerNode<T>(key);
@@ -46,7 +46,7 @@ void centerQueue<T>::insert(T key)
  * 这意味着"将最小节点所属的树"从堆中移除!
  */
 template <class T>
-centerNode<T>* centerQueue<T>::extractMin()
+centerNode<T>* centerHeap<T>::extractMin()
 {
     centerNode<T> *p = min;
 
@@ -66,7 +66,7 @@ centerNode<T>* centerQueue<T>::extractMin()
  * 将node链接到root根结点
  */
 template <class T>
-void centerQueue<T>::link(centerNode<T>* node, centerNode<T>* root)
+void centerHeap<T>::link(centerNode<T>* node, centerNode<T>* root)
 {
     // 将node从双链表中移除
     removeNode(node);
@@ -85,7 +85,7 @@ void centerQueue<T>::link(centerNode<T>* node, centerNode<T>* root)
  * 创建consolidate所需空间
  */
 template <class T>
-void centerQueue<T>::makeCons()
+void centerHeap<T>::makeCons()
 {
     int old = maxDegree;
 
@@ -97,14 +97,14 @@ void centerQueue<T>::makeCons()
 
     // 因为度为maxDegree可能被合并，所以要maxDegree+1
     cons = (centerNode<T> **)realloc(cons, 
-            sizeof(centerQueue<T> *) * (maxDegree + 1));
+            sizeof(centerHeap<T> *) * (maxDegree + 1));
 }
 
 /* 
  * 合并斐波那契堆的根链表中左右相同度数的树
  */
 template <class T>
-void centerQueue<T>::consolidate()
+void centerHeap<T>::consolidate()
 {
     int i, d, D;
     centerNode<T> *x, *y, *tmp;
@@ -156,7 +156,7 @@ void centerQueue<T>::consolidate()
  * 移除最小节点
  */
 template <class T>
-void centerQueue<T>::removeMin()
+void centerHeap<T>::removeMin()
 {
     if (min==NULL)
         return ;
@@ -247,7 +247,7 @@ void centerHeap<T>::cut(centerNode<T> *node, centerNode<T> *parent)
 template <class T>
 void centerHeap<T>::cascadingCut(centerNode<T> *node)
 {
-    FibNode<T> *parent = node->parent;
+    centerNode<T> *parent = node->parent;
     if (parent != NULL)
     {
         if (node->marked == false)
@@ -263,9 +263,9 @@ void centerHeap<T>::cascadingCut(centerNode<T> *node)
  * 将斐波那契堆中节点node的值减少为key
  */
 template <class T>
-void FibHeap<T>::decrease(FibNode<T> *node, T key)
+void centerHeap<T>::decrease(centerNode<T> *node, T key)
 {
-    FibNode<T> *parent;
+    centerNode<T> *parent;
 
     if (min==NULL ||node==NULL)
         return ;
@@ -297,7 +297,7 @@ void FibHeap<T>::decrease(FibNode<T> *node, T key)
 template <class T>
 void centerHeap<T>::increase(centerNode<T> *node, T key)
 {
-    FibNode<T> *child, *parent, *right;
+    centerNode<T> *child, *parent, *right;
 
     if (min==NULL ||node==NULL)
         return ;
@@ -364,7 +364,7 @@ void centerHeap<T>::update(centerNode<T> *node, T key)
 template <class T>
 void centerHeap<T>::update(T oldkey, T newkey)
 {
-    FibNode<T> *node;
+    centerNode<T> *node;
 
     node = search(oldkey);
     if (node!=NULL)
@@ -376,8 +376,8 @@ void centerHeap<T>::update(T oldkey, T newkey)
 template <class T>
 centerNode<T>* centerHeap<T>::search(centerNode<T> *root, T key)
 {
-    FibNode<T> *t = root;    // 临时节点
-    FibNode<T> *p = NULL;    // 要查找的节点
+    centerNode<T> *t = root;    // 临时节点
+    centerNode<T> *p = NULL;    // 要查找的节点
 
     if (root==NULL)
         return root;
