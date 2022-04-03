@@ -1,474 +1,276 @@
-#include <stdio.h>
+#include <cstdio>
+#include "stdlib.h"
+#include <fstream>
 #include <iostream>
-#include <stdlib.h>
-#include <string.h>
 #include "localq.h"
 #include "centerq.h"
 using namespace std;
 
-//插入节点
-template <class T>
-void centerHeap<T>::addNode(centerNode<T> *node, centerNode<T> *root)
-{
-    node->left        = root->left;
-    root->left->right = node;
-    node->right       = root;
-    root->left        = node;
-}
 
 template <class T>
-void centerHeap<T>::insert(centerNode<T> *node)
-{
-    if (totalnum == 0)
-        min = node;
-    else
-       {
-        addNode(node, min);
-        if (node->key < min->key)
-            min = node;
-        }
-    totalnum++;
-}
-
-template <class T>
-void centerHeap<T>::insert(T key)
-{
-    centerNode<T> *node;
-    node = new centerNode<T>(key);
-    if (node == NULL) return ;
-    insert(node);
-}
-
-
-//取出最小节点并删除
-/*
- * 将"堆的最小结点"从根链表中移除，
- * 这意味着"将最小节点所属的树"从堆中移除!
- */
-template <class T>
-centerNode<T>* centerHeap<T>::extractMin()
-{
-    centerNode<T> *p = min;
-
-    if (p == p->right)
-        min = NULL;
-    else
-    {
-        removeNode(p);
-        min = p->right;
+int centerHeap<T>::check_nearest(centerNode<T> *node)
+{   
+    for(int i = 0; i < 3;i++){
+        hospital* hop = new hospital();
+        hop->hosp_id = i;
+        hop->capacity = 10+i;
+        hop->content = 0;
+        hop->loc = 2+i;
+        H[i] = hop;
     }
-    p->left = p->right = p;
 
-    return p;
-}
- 
-/*
- * 将node链接到root根结点
- */
-template <class T>
-void centerHeap<T>::link(centerNode<T>* node, centerNode<T>* root)
-{
-    // 将node从双链表中移除
-    removeNode(node);
-    // 将node设为root的孩子
-    if (root->child == NULL)
-        root->child = node;
-    else
-        addNode(node, root->child);
-
-    node->parent = root;
-    root->degree++;
-    node->marked = false;
-}
- 
-/* 
- * 创建consolidate所需空间
- */
-template <class T>
-void centerHeap<T>::makeCons()
-{
-    int old = maxDegree;
-
-    // 计算log2(keyNum)，"+1"意味着向上取整！
-    // ex. log2(13) = 3，向上取整为3+1=4。
-    maxDegree = (log(keyNum)/log(2.0)) + 1;
-    if (old >= maxDegree)
-        return ;
-
-    // 因为度为maxDegree可能被合并，所以要maxDegree+1
-    cons = (centerNode<T> **)realloc(cons, 
-            sizeof(centerHeap<T> *) * (maxDegree + 1));
-}
-
-/* 
- * 合并斐波那契堆的根链表中左右相同度数的树
- */
-template <class T>
-void centerHeap<T>::consolidate()
-{
-    int i, d, D;
-    centerNode<T> *x, *y, *tmp;
-
-    makeCons();//开辟哈希所用空间
-    D = maxDegree + 1;
-
-    for (i = 0; i < D; i++)
-        cons[i] = NULL;
- 
-    // 合并相同度的根节点，使每个度数的树唯一
-    while (min != NULL)
-    {
-        x = extractMin();                // 取出堆中的最小树(最小节点所在的树)
-        d = x->degree;                    // 获取最小树的度数
-        // cons[d] != NULL，意味着有两棵树(x和y)的"度数"相同。
-        while (cons[d] != NULL)
-        {
-            y = cons[d];                // y是"与x的度数相同的树" 
-            if (x->key > y->key)        // 保证x的键值比y小
-                swap(x, y);
-
-            link(y, x);    // 将y链接到x中
-            cons[d] = NULL;
-            d++;
+    int result = 0;
+    int best = 100;
+    int choice = 0;
+    int loc_pat = centerNode->loc;
+    for(int i == 0; i < 3; i++){
+        if(H[i]->content >= capacity){
+            continue;
         }
-        cons[d] = x;
+        result = loc_pat - H[i]->loc;
+        if(result < 0){
+            result = -result;
+        } 
+        result = result % 10;
+        if(result < best){
+            best = result;
+            choice = i;
+        }
+
     }
-    min = NULL;
- 
-    // 将cons中的结点重新加到根表中
-    for (i=0; i<D; i++)
-    {
-        if (cons[i] != NULL)
-        {
-            if (min == NULL)
-                min = cons[i];
-            else
-            {
-                addNode(cons[i], min);
-                if ((cons[i])->key < min->key)
-                    min = cons[i];
+    return choice;
+    
+}
+
+
+
+inline localQueue<patient*> build_queue(int i){
+    localQueue<patient*> palist;
+    char filename[256];
+    cout<<"请输入文件名"<<endl;
+    cin>>filename;
+    int omitline = 0; // the line to be neglected
+    ifstream infile(filename);
+    while(infile.good()){
+        //.csv文件用","作为分隔符
+        if(omitline == 0){
+            char omitting[256];
+            infile.getline(omitting,256);
+            omitline++;
+            continue;
+        }
+        //patient* ill = new patient();
+        int item;
+        item = 0;
+        while(item >= 0){
+            char buffer[64]; // the size of each item;
+            infile.getline(buffer,64,',');
+            while(buffer[0] == '\n'){
+                strcpy(buffer,buffer + 1);
             }
-        }
+            item++;
+            patient* pat = new patient();
+            switch (item) {  // You can refer to the order in the sample csv.
+					case 1:
+						/*ill->id=(int)strtol(buf,NULL,10);*/
+						if (buffer[0]=='\0') {
+							delete pat;
+							pat = nullptr; 
+							item=-1;
+							break;
+						}
+						//pat->id=len_N;  // Set the id as the index of the array N.
+                        pat->id = (int)strtol(buffer,NULL,10);
+						break;
+					case 2:
+						strcpy(pat->name,buffer);
+						break;
+					case 3:
+						pat->prof=(int)strtol(buffer,NULL,10);
+						break;
+					case 4:
+						pat->time=(int)strtol(buffer,NULL,10);
+						break; 
+                    case 5:
+                        pat->risk=(int)strtol(buffer,NULL,10);
+                        break;
+                    case 6:
+                        strcpy(pat->contact,buffer);
+                        break;
+                    case 7:
+                        pat->treat_ddl=(int)strtol(buffer,NULL,10);
+                        break;
+                    case 8:
+                        pat->loc=(int)strtol(buffer,NULL,10);
+						break;
+                    case 9:
+                        pat->birth=(int)strtol(buffer,NULL,10);
+                        (*pat).age_rank();
+                        break;
+                    case 10:
+                        strcpy(pat->status,buffer);
+                        item = -2;
+                        break;
+                        
+                    default:
+                        cout << "exit with case in reading the file\n";      
+            }
+            if(item == -2){
+                N[len_N++]=pat; 
+                palist.En_queue(pat);  // This pointer to this patient is stored to the vector palist.    
+            }   
+        }   
     }
+    infile.close();
+	return palist;
 }
- 
-/*
- * 移除最小节点
- */
-template <class T>
-void centerHeap<T>::removeMin()
+
+template<class T> localQueue<T>::localQueue(int size)
 {
-    if (min==NULL)
-        return ;
+    maxsize = size;
+    if (size < 20)
+        minsize = size;
+        maxsize = 20;
+    else
+        minsize = 20;
+    numitems = 0;
+    first = 0;
+    last = 0;
+    reprarray = new T[maxsize];
+}
 
-    centerNode<T> *child = NULL;
-    centerNode<T> *m = min;
-    // 将min每一个儿子(儿子和儿子的兄弟)都添加到"斐波那契堆的根链表"中
-    while (m->child != NULL)
+template<class T>bool localQueue<T>::isNull(void)
+{
+    if (numitems == 0)
+	{
+		return true;  //队头等于队尾，为空
+	}
+	return false;
+}
+
+template<class T> T &localQueue<T>::operator[](int index)
+{
+    if ((0 <= index) && (index <= numitems))
     {
-        child = m->child;
-        removeNode(child);
-        if (child->right == child)
-            m->child = NULL;
-        else
-            m->child = child->right;
-
-        addNode(child, min);
-        child->parent = NULL;
+        int dirindex = (index + first -1) % maxsize;
+        return reprarray[dirindex];
     }
-
-    // 将m从根链表中移除
-    removeNode(m);
-    // 若m是堆中唯一节点，则设置堆的最小节点为NULL；
-    // 否则，设置堆的最小节点为一个非空节点(m->right)，然后再进行调节。
-    if (m->right == m)
-        min = NULL;
     else
     {
-        min = m->right;
-        consolidate();
+        cout << "Error: index out of range.\n";
+        exit(EXIT_FAILURE);
     }
-    keyNum--;
+}   
 
-    delete m;
-}
-/*
- * 获取斐波那契堆中最小键值，并保存到pkey中；成功返回true，否则返回false。
- */
-template <class T>
-bool centerHeap<T>::minimum(T *pkey)
+template<class T> int localQueue<T>::getlength(void)
 {
-    if (min==NULL || pkey==NULL)
-        return false;
-
-    *pkey = min->key;
-    return true;
+    return numitems;
 }
 
-/*
- * 修改度数
- */
-template <class T>
-void centerHeap<T>::renewDegree(centerNode<T> *parent, int degree)
+template<class T> T localQueue<T>::front(void)
 {
-    parent->degree -= degree;
-    if (parent-> parent != NULL)
-        renewDegree(parent->parent, degree);
+    if (isNull())
+    {
+        cout << "The queue is empty.\n";
+        exit(EXIT_FAILURE);
+    }
+    else{
+        return reprarray[first];
+    }
 }
-/*
- * 将node从父节点parent的子链接中剥离出来，
- * 并使node成为"堆的根链表"中的一员。
- */
-template <class T>
-void centerHeap<T>::cut(centerNode<T> *node, centerNode<T> *parent)
+
+template<class T> T localQueue<T>::rear(void)
 {
-    removeNode(node);
-    renewDegree(parent, node->degree);
-    // node没有兄弟
-    if (node == node->right)
-        parent->child = NULL;
+    if (isNull())
+    {
+        cout << "The queue is empty.\n";
+        exit(EXIT_FAILURE);
+    }
     else
-        parent->child = node->right;
-
-    node->parent = NULL;
-    node->left = node->right = node;
-    node->marked = false;
-    // 将"node所在树"添加到"根链表"中
-    addNode(node, min);
-}
-/*
- * 对节点node进行"级联剪切"
- *
- * 级联剪切：如果减小后的结点破坏了最小堆性质，
- *     则把它切下来(即从所在双向链表中删除，并将
- *     其插入到由最小树根节点形成的双向链表中)，
- *     然后再从"被切节点的父节点"到所在树根节点递归执行级联剪枝
- */
-template <class T>
-void centerHeap<T>::cascadingCut(centerNode<T> *node)
-{
-    centerNode<T> *parent = node->parent;
-    if (parent != NULL)
     {
-        if (node->marked == false)
-            node->marked = true;
-        else
-        {
-            cut(node, parent);
-            cascadingCut(parent);
-        }
+        int dirindex = (first + numitems - 1) % maxsize;
+        return reprarray[dirindex];
     }
 }
-/*
- * 将斐波那契堆中节点node的值减少为key
- */
-template <class T>
-void centerHeap<T>::decrease(centerNode<T> *node, T key)
-{
-    centerNode<T> *parent;
 
-    if (min==NULL ||node==NULL)
-        return ;
-
-    if ( key>=node->key)
-    {
-        cout << "decrease failed: the new key(" << key <<") "
-             << "is no smaller than current key(" << node->key <<")" << endl;
-        return ;
+template<class T> T localQueue<T>::De_queue(void){ // let a element go out a queue
+    if (isNull())
+	{
+		cout<<"The queue is empty~";
+		exit(EXIT_FAILURE);
+	}
+    if(((numitems -1) <= maxsize * 0.25) && (2*minsize < maxsize)){
+        deallocate();
     }
+    T ele_out = reprarray[first];  // the element to be out;
+	first += 1;
+	first = first % maxsize;
+    numitems--;
+    return ele_out;
+}
 
-    node->key = key;
-    parent = node->parent;
-    if (parent!=NULL && node->key < parent->key)
+template<class T> void localQueue<T>::En_queue(T element){ // let a element go into a queue
+    if ( numitems >= maxsize * 0.75)
+        allocate();
+	last += 1;
+    last = last % maxsize;
+	reprarray[last] = element;
+    numitems++;
+    return;
+}
+
+template<class T> void localQueue<T>::allocate(void)
+{
+    int newsize = 2 * maxsize;
+    T *newarray = new T[newsize];
+    for (int i = 0; i < numitems; ++i)
+        newarray[i] = reprarray[(i + first) % maxsize];
+    first = 0;
+    last = numitems -1;
+    delete[] reprarray;
+    reprarray = newarray;
+    maxsize = newsize;
+    
+    return;
+}
+
+template<class T> void localQueue<T>::deallocate(void)
+{
+    int newsize = maxsize / 2;
+    T *newarray = new T[newsize];
+    for (int i = 0; i < numitems; ++i)
     {
-        // 将node从父节点parent中剥离出来，并将node添加到根链表中
-        cut(node, parent);
-        cascadingCut(parent);
+        newarray[i] = reprarray[(i + first) % maxsize];
     }
-
-    // 更新最小节点
-    if (node->key < min->key)
-        min = node;
+    first = 0;
+    last = numitems -1;
+    delete[] reprarray;
+    reprarray = newarray;
+    maxsize = newsize;
+    return;
 }
 
-/*
- * 将斐波那契堆中节点node的值增加为key
- */
-template <class T>
-void centerHeap<T>::increase(centerNode<T> *node, T key)
-{
-    centerNode<T> *child, *parent, *right;
-
-    if (min==NULL ||node==NULL)
-        return ;
-
-    if (key <= node->key)
-    {
-        cout << "increase failed: the new key(" << key <<") "
-             << "is no greater than current key(" << node->key <<")" << endl;
-        return ;
+void patient::age_rank() {  // for aged < 12, we use 1 to represent the age group;And the same for others
+	int age_diff = 2022 - this->birth;
+	if (age_diff <= 12) {
+        this->aging = 1;
     }
-
-    // 将node每一个儿子(不包括孙子,重孙,...)都添加到"斐波那契堆的根链表"中
-    while (node->child != NULL)
-    {
-        child = node->child;
-        removeNode(child);               // 将child从node的子链表中删除
-        if (child->right == child)
-            node->child = NULL;
-        else
-            node->child = child->right;
-
-        addNode(child, min);       // 将child添加到根链表中
-        child->parent = NULL;
+	else if (age_diff <= 18) {
+        this->aging = 2;
     }
-    node->degree = 0;
-    node->key = key;
-
-    // 如果node不在根链表中，
-    //     则将node从父节点parent的子链接中剥离出来，
-    //     并使node成为"堆的根链表"中的一员，
-    //     然后进行"级联剪切"
-    // 否则，则判断是否需要更新堆的最小节点
-    parent = node->parent;
-    if(parent != NULL)
-    {
-        cut(node, parent);
-        cascadingCut(parent);
+	else if (age_diff <= 35) {
+        this->aging = 3;
     }
-    else if(min == node)
-    {
-        right = node->right;
-        while(right != node)
-        {
-            if(node->key > right->key)
-                min = right;
-            right = right->right;
-        }
+	else if (age_diff <= 50) {
+        this->aging = 4;
     }
-}
-/*
- * 更新斐波那契堆的节点node的键值为key
- */
-template <class T>
-void centerHeap<T>::update(centerNode<T> *node, T key)
-{
-    if(key < node->key)
-        decrease(node, key);
-    else if(key > node->key)
-        increase(node, key);
-    else
-        cout << "No need to update!!!" << endl;
-}
-
-template <class T>
-void centerHeap<T>::update(T oldkey, T newkey)
-{
-    centerNode<T> *node;
-
-    node = search(oldkey);
-    if (node!=NULL)
-        update(node, newkey);
-}
-/*
- * 在最小堆root中查找键值为key的节点
- */
-template <class T>
-centerNode<T>* centerHeap<T>::search(centerNode<T> *root, T key)
-{
-    centerNode<T> *t = root;    // 临时节点
-    centerNode<T> *p = NULL;    // 要查找的节点
-
-    if (root==NULL)
-        return root;
-
-    do
-    {
-        if (t->key == key)
-        {
-            p = t;
-            break;
-        }
-        else
-        {
-            if ((p = search(t->child, key)) != NULL)
-                break;
-        }
-        t = t->right;
-    } while (t != root);
-
-    return p;
-}
-/*
- * 在斐波那契堆中查找键值为key的节点
- */
-template <class T>
-centerNode<T>* centerHeap<T>::search(T key)
-{
-    if (min==NULL)
-        return NULL;
-
-    return search(min, key);
-}
-
-/*
- * 在斐波那契堆中是否存在键值为key的节点。
- * 存在返回true，否则返回false。
- */
-template <class T>
-bool centerHeap<T>::contains(T key)
-{
-    return search(key)!=NULL ? true: false;
-}
-
-/*
- * 删除结点node
- */
-template <class T>
-void centerHeap<T>::remove(centerNode<T> *node)
-{
-    T m = min->key-1;
-    decrease(node, m-1);
-    removeMin();
-}
-
-template <class T>
-void centerHeap<T>::remove(T key)
-{
-    centerNode<T> *node;
-
-    if (min==NULL)
-        return ;
-
-    node = search(key);
-    if (node==NULL)
-        return ;
-
-    remove(node);
-}
-
-/*
- * 销毁斐波那契堆
- */
-template <class T>
-void centerHeap<T>::destroyNode(centerNode<T> *node)
-{
-    centerNode<T> *start = node;
-
-    if(node == NULL)
-        return;
-
-    do {
-        destroyNode(node->child);
-        // 销毁node，并将node指向下一个
-        node = node->right;
-        delete node->left;
-    } while(node != start);
-}
-
-template <class T>
-void centerHeap<T>::destroy()
-{
-    destroyNode(min);
-    free(cons);
+	else if (age_diff <= 65) {
+        this->aging = 5;
+    }
+	else if (age_diff <= 75) {
+        this->aging = 6;
+    }
+	else{
+        this->aging = 7;
+    }  
 }
