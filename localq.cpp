@@ -3,7 +3,45 @@
 #include <fstream>
 #include <iostream>
 #include "localq.h"
+#include "centerq.h"
 using namespace std;
+
+
+template <class T>
+int centerHeap<T>::check_nearest(centerNode<T> *node)
+{   
+    for(int i = 0; i < 3;i++){
+        hospital* hop = new hospital();
+        hop->hosp_id = i;
+        hop->capacity = 10+i;
+        hop->content = 0;
+        hop->loc = 2+i;
+        H[i] = hop;
+    }
+
+    int result = 0;
+    int best = 100;
+    int choice = 0;
+    int loc_pat = centerNode->loc;
+    for(int i == 0; i < 3; i++){
+        if(H[i]->content >= capacity){
+            continue;
+        }
+        result = loc_pat - H[i]->loc;
+        if(result < 0){
+            result = -result;
+        } 
+        result = result % 10;
+        if(result < best){
+            best = result;
+            choice = i;
+        }
+
+    }
+    return choice;
+    
+}
+
 
 
 inline localQueue<patient*> build_queue(int i){
@@ -63,15 +101,17 @@ inline localQueue<patient*> build_queue(int i){
                         pat->treat_ddl=(int)strtol(buffer,NULL,10);
                         break;
                     case 8:
-                        pat->near_hospital=(int)strtol(buffer,NULL,10);
+                        pat->loc=(int)strtol(buffer,NULL,10);
 						break;
                     case 9:
                         pat->birth=(int)strtol(buffer,NULL,10);
+                        (*pat).age_rank();
                         break;
                     case 10:
                         strcpy(pat->status,buffer);
                         item = -2;
                         break;
+                        
                     default:
                         cout << "exit with case in reading the file\n";      
             }
@@ -208,4 +248,29 @@ template<class T> void localQueue<T>::deallocate(void)
     reprarray = newarray;
     maxsize = newsize;
     return;
+}
+
+void patient::age_rank() {  // for aged < 12, we use 1 to represent the age group;And the same for others
+	int age_diff = 2022 - this->birth;
+	if (age_diff <= 12) {
+        this->aging = 1;
+    }
+	else if (age_diff <= 18) {
+        this->aging = 2;
+    }
+	else if (age_diff <= 35) {
+        this->aging = 3;
+    }
+	else if (age_diff <= 50) {
+        this->aging = 4;
+    }
+	else if (age_diff <= 65) {
+        this->aging = 5;
+    }
+	else if (age_diff <= 75) {
+        this->aging = 6;
+    }
+	else{
+        this->aging = 7;
+    }  
 }
