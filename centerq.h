@@ -22,7 +22,9 @@ template<class T> class centerNode
 	int prof; 
 	int birth;  
 	int risk;  
-	int time;  // when he is registed
+	int time;  // when he is register
+    int treated_time;  //被治好的时间
+    int treated_location;   //被治好的地点
 	int aging;   // the age group he is in
 	char status[10]; // whether he is in waiting , appointed, or else
 		
@@ -53,7 +55,7 @@ template<class T> class centerNode
 };
 
 
-template<class T> class centerQueue
+template<class T> class centerHeap
 {
 	private:
         int totalnum;         // 堆中节点的总数
@@ -69,7 +71,7 @@ template<class T> class centerQueue
        
         void removeMin();    // 移除斐波那契堆中的最小节点
         
-        void combine(FibHeap<T> *other);  // 将other合并到当前堆中
+        void combine(centerHeap<T> *other);  // 将other合并到当前堆中
         
         bool minimum(T *pkey);  // 获取斐波那契堆中最小键值，并保存到pkey中；成功返回true，否则返回false。
        
