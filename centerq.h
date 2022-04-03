@@ -30,7 +30,8 @@ template<class T> class centerNode
 		
 	int treat_ddl;  //the deadline of the treated date
 	int near_hospital;    //the closed hospital who can get treated
-		
+	int loc;
+    
 	/* Class Functions */
 	centerNode();
 	  //~patient();
@@ -42,7 +43,7 @@ template<class T> class centerNode
     centerNode(patient value):key(value), degree(0), marked(false), 
     left(NULL),right(NULL),child(NULL),parent(NULL) 
     {
-        key    = *************************************;
+        key    = prof * 1000000 + age * 100000 + time;
         degree = 0;
         marked = false;
         left   = this;
@@ -56,13 +57,12 @@ template<class T> class centerNode
 
 
 template<class T> class centerHeap
-{
-	private:
+{     
+      
+    public:
         int totalnum;         // 堆中节点的总数
         int maxdegree;      // 最大度
         int withdrew_list[1000];
-      
-    public:
         centerNode<T> *min;    // 最小节点(某个最小堆的根节点)
         centerNode<T> **cons;    // 最大度的内存区域
 
@@ -77,7 +77,8 @@ template<class T> class centerHeap
         void destroy();  // 销毁
         centerHeap<T> search_id(centerNode<T> *root, T key);
         centerHeap<T> pop_patient_wrtddl(centerNode<T> *root, int ddl);
-
+        centerHeap<T> withdrew(int id);
+        int check_nearest(centerNode<T> *node);
 
     private:
         
