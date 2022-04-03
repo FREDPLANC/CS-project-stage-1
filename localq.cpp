@@ -15,7 +15,7 @@ int centerHeap<T>::check_nearest(centerNode<T> *node)
     int result = 0;
     int best = 100;
     int choice = 0;
-    int loc_pat = centerNode->loc;
+    int loc_pat = node->loc;
     for(int i == 0; i < 3; i++){
         if(H[i]->content >= capacity){
             continue;
