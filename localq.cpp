@@ -10,6 +10,7 @@ void daily_hosp_setZero(void){
     for(int i = 0; i < 3;i++){
         H[i]->content = 0;
     }
+    return;
 }
 
 template <class T>
