@@ -6,6 +6,7 @@
 #include "centerq.h"
 using namespace std;
 
+void daily_hosp_setZero(void);
 
 template <class T>
 int centerHeap<T>::check_nearest(centerNode<T> *node)
