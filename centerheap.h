@@ -60,11 +60,15 @@ template<class T> class centerHeap
 {     
       
     public:
-        int totalnum;         // 堆中节点的总数
-        int maxdegree;      // 最大度
-        int withdrew_list[1000];
+        int keyNum;         // 堆中当前节点的总数(不只是key的数量, key可能重复)
+        int total_appointment_num;       // 一共从开始到现在有多少病人被安排了appointment
+        int maxDegree;      // 最大度
+        int withdraw_list[1000]; //查询是否该id曾经撤销过预约或等待
+        int withdraw_number;     //记录已经撤销的人数
         centerNode<T> *min;    // 最小节点(某个最小堆的根节点)
         centerNode<T> **cons;    // 最大度的内存区域
+        centerNode<T> *last_appointment; //储存每日预约名单的双链表, last_appointment指向今日最后一个预约的病人
+        centerNode<T> *last_treatment;   //储存总治疗名单的双链表
 
         centerHeap();  //*********************************************************************************************
         ~centerHeap();  //***********************************************************************************************
@@ -75,14 +79,16 @@ template<class T> class centerHeap
         void update(T oldkey, T newkey);   // 将斐波那契堆中键值oldkey更新为newkey
         void remove(T key);   // 删除键值为key的节点
         void destroy();  // 销毁
-        centerHeap<T> search_id(centerNode<T> *root, T key);
-        centerHeap<T> pop_patient_wrtddl(centerNode<T> *root, int ddl);
-        centerHeap<T> withdrew(int id);
+        centerNode<T>* search_id(centerNode<T> *root, int id);
+        void appointment_process(int date , centerNode<T> *dummy);// 处理预约
+        void treatment_process(int date , centerNode<T> *dummy);  // 处理治疗
+        void pop_patient_wrtddl(centerNode<T> *root, int ddl);
+        void withdraw(int id);
         int check_nearest(centerNode<T> *node);
 
     private:
         
-        void removeNode(centerNode<T> *node);  // 将node从双链表移除
+        void removeNode(centerNode<T> *node);  // 将node从双链表移除(不是完整的删除操作)
         
         void addNode(centerNode<T> *node, centerNode<T> *root);  // 将node堆结点加入root结点之前(循环链表中)
         
@@ -120,8 +126,9 @@ template<class T> class centerHeap
         
         void print(centerNode<T> *node, centerNode<T> *prev, int direction);  // 打印"斐波那契堆"
 
+        void centerHeap<T>::print();
+        
+        bool centerHeap<T>::contains(T key); //在斐波那契堆中是否存在键值为key的节点。存在返回true，否则返回false。
+
 
 };
-
-
-

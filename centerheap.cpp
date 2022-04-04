@@ -27,6 +27,10 @@ centerHeap<T>::centerHeap()
     maxDegree = 0;
     min = NULL;
     cons = NULL;
+    last_appointment = NULL;
+    last_treatment = NULL;
+    withdraw_number = 0;
+    total_appointment_num = 0;
 }
 
 /*
@@ -296,8 +300,6 @@ void centerHeap<T>::removeMin()
         consolidate();
     }
     keyNum--;
-
-    delete m;
 }
 
 /*
@@ -369,7 +371,6 @@ void centerHeap<T>::cascadingCut(centerNode<T> *node)
         }
     }
 }
-
 
 /*
  * 将斐波那契堆中节点node的值减少为key
@@ -526,7 +527,7 @@ centerNode<T>* centerHeap<T>::search(T key)
     return search(min, key);
 }
 template <class T>
-centerNode<T>* centerHeap<T>::search_id(centerNode<T> *root, T key)
+centerNode<T>* centerHeap<T>::search_id(centerNode<T> *root, int id)
 {
     centerNode<T> *t = root;    // 临时节点
     centerNode<T> *p = NULL;    // 要查找的节点
@@ -536,14 +537,14 @@ centerNode<T>* centerHeap<T>::search_id(centerNode<T> *root, T key)
 
     do
     {
-        if (t->key == key)
+        if (t->id == id)
         {
             p = t;
             break;
         }
         else
         {
-            if ((p = search_id(t->child, key)) != NULL)
+            if ((p = search_id(t->child, id)) != NULL)
                 break;
         }
         t = t->right;
@@ -552,7 +553,7 @@ centerNode<T>* centerHeap<T>::search_id(centerNode<T> *root, T key)
     return p;
 }
 template <class T>
-void centerHeap<T>::pop_patient_wrtddl(centerNode<T> *root, int ddl)
+void centerHeap<T>::pop_patient_wrtddl(centerNode<T> *root, int ddl) //返回指向当天有ddl的病人的指针
 {
     centerNode<T> *t = root;    // 临时节点
    
@@ -562,14 +563,26 @@ void centerHeap<T>::pop_patient_wrtddl(centerNode<T> *root, int ddl)
 
     do
     {
-        if ( t->treat_ddl == ddl)
-        {
-            t->treated_time = ddl + 1;
-            t->treated_location = fine_nearest_hospital();
-            remove(t);
+        if ( t->treat_ddl == ddl){
+            t->treated_time = ddl - 1;
+            t->treated_location = check_nearest(t);
+            if(last_appointment == NULL) {
+                last_appointment = min;
+                remove(t);
+                total_appointment_num++;
+            }
+            else{
+                last_appointment->parent = t;
+                remove(t);
+                last_appointment->parent->child = last_appointment;
+                last_appointment = t;
+                total_appointment_num++;
+            }
+           
+        }else{
+            search(t->child, ddl)) 
         }
        
-        p = pop_patient_wrtddl(t->child, key);
         t = t->right;
     } while (t != root);
 
