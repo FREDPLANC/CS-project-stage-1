@@ -36,6 +36,7 @@ int centerHeap<T>::check_nearest(centerNode<T> *node)
         }
 
     }
+    H[choice]->content++;
     return choice;
     
 }
