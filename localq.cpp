@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include "localq.h"
-#include "centerHeap.h"
+#include "centerheap.h"
 using namespace std;
 
 void daily_hosp_setZero(void){
