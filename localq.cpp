@@ -118,7 +118,8 @@ inline localQueue<patient*> build_queue(int i){
             }
             if(item == -2){
                 N[len_N++]=pat; 
-                palist.En_queue(pat);  // This pointer to this patient is stored to the vector palist.    
+                palist.En_queue(pat);  // This pointer to this patient is stored to the vector palist.  
+                 
             }   
         }   
     }
