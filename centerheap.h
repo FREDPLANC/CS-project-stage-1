@@ -40,10 +40,10 @@ template<class T> class centerNode
 
 
 
-    centerNode(patient value):key(value), degree(0), marked(false), 
+    centerNode(patient value): degree(0), marked(false), 
     left(NULL),right(NULL),child(NULL),parent(NULL) 
     {
-        key    = prof * 1000000 + age * 100000 + time;
+        key    = value.prof * 1000000 + value.aging * 100000 + value.time;
         degree = 0;
         marked = false;
         left   = this;
@@ -85,6 +85,9 @@ template<class T> class centerHeap
         void pop_patient_wrtddl(centerNode<T> *root, int ddl);
         void withdraw(int id);
         int check_nearest(centerNode<T> *node);
+        void build(); //读取医院普通队列
+        void add_patient(localQueue<int>* Q);
+        void insert(patient p);
 
     private:
         
