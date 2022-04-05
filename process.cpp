@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "localq.h"
-#include "centerq.h"
+#include "centerheap.h"
 using namespace std;
 //处理预约和撤销操作
 //当天首先处理治疗名单, 即首先调用withdraw 函数撤销在预约名单里(此时预约名单相当于今日的治疗名单)和中心队列等待中的待撤销病人
@@ -15,10 +15,11 @@ using namespace std;
 //content_total 记录目前今日有多少病人已经预约
 /*******************************************************************************************************************/
 template<class T> void  centerHeap<T>::appointment_process(int date , centerNode<T> *dummy)
-{
-    pop_patient_wrtddl(min,date+2);  // 在ddl之前一天就要进行治疗,因此前第二天需要预约
+{   extern int capacity_total;
+    extern int content_total;
+    pop_patient_wrtddl(min,date+10);  // 在ddl之前一天就要进行治疗,因此前第二天需要预约
     for (int i = 0; i < capacity_total-content_total;i++){ //防止超出当日所有医院加起来的每日总容量
-        min->treated_time = ddl + 1;
+        min->treated_time = date + 5;
         min->treated_location = check_nearest();
         total_appointment_num++;
         if(last_appointment == NULL) {
