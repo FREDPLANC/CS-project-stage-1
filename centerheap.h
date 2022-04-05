@@ -43,7 +43,7 @@ template<class T> class centerNode
     centerNode(patient value): degree(0), marked(false), 
     left(NULL),right(NULL),child(NULL),parent(NULL) 
     {
-        key    = value.prof * 1000000 + value.aging * 100000 + value.time;
+        key    = value.prof * 100000 + value.aging * 10000 + value.time+ value.risk * 1000000;
         degree = 0;
         marked = false;
         left   = this;
@@ -88,6 +88,11 @@ template<class T> class centerHeap
         void build(); //读取医院普通队列
         void add_patient(localQueue<int>* Q);
         void insert(patient p);
+        void report_treated();
+        void report_appointment();
+        void report_registered();
+        void week_report();
+        void month_report();
 
     private:
         
