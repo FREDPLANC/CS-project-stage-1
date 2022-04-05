@@ -80,8 +80,8 @@ template<class T> class centerHeap
         void remove(T key);   // 删除键值为key的节点
         void destroy();  // 销毁
         centerNode<T>* search_id(centerNode<T> *root, int id);
-        void appointment_process(int date , centerNode<T> *dummy);// 处理预约
-        void treatment_process(int date , centerNode<T> *dummy);  // 处理治疗
+        void appointment_process(int date );// 处理预约
+        void treatment_process(int date );  // 处理治疗
         void pop_patient_wrtddl(centerNode<T> *root, int ddl);
         void withdraw(int id);
         int check_nearest(centerNode<T> *node);
