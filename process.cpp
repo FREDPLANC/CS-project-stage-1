@@ -14,7 +14,7 @@ using namespace std;
 //capacity_total 应该为const全局变量, 记录所有医院加起来的每日总容量
 //content_total 记录目前今日有多少病人已经预约
 /*******************************************************************************************************************/
-template<class T> void  centerHeap<T>::appointment_process(int date , centerNode<T> *dummy)
+template<class T> void  centerHeap<T>::appointment_process(int date )
 {   extern int capacity_total;
     extern int content_total;
     pop_patient_wrtddl(min,date+10);  // 在ddl之前一天就要进行治疗,因此前第二天需要预约
@@ -38,7 +38,7 @@ template<class T> void  centerHeap<T>::appointment_process(int date , centerNode
     }
     return;
 }
-template<class T> void centerHeap<T>::treatment_process(int date , centerNode<T> *dummy)  // 处理治疗, 把前天的预约名单里的病人全部倒入治疗名单,预约名单清零
+template<class T> void centerHeap<T>::treatment_process(int date)  // 处理治疗, 把前天的预约名单里的病人全部倒入治疗名单,预约名单清零
 {  
     centerNode<T> *temp;
     
