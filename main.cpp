@@ -12,14 +12,24 @@
 using namespace std;
 
 int months[13]={0,31,28,31,30,31,30,31,31,30,31,30,31};
+int month = 1;
+int day = 1;
+int am = 0;
+int week = 0;
+int date_treat;
+centerHeap<int> center;
+void choice_0();
+void choice_1();
+void choice_2();
+void choice_3();
 
 void half_day_process(){
     if(am != 0){
         return;
     }
-
     daily_hosp_setZero();
-    int date_treat = month*1000 + day*10 + am;
+    extern int date_treat;
+    date_treat = month*1000 + day*10 + am;
     center.treatment_process(date_treat);
     center.build(); // insert the csv daily data;
     center.appointment_process(date_treat);
@@ -89,12 +99,6 @@ void choice_0(){
 	}
 }
 
-int month = 1;
-int day = 1;
-int am = 0;
-int week = 0;
-
-centerHeap<int>* center;
 
 int main()
 {   
@@ -142,7 +146,5 @@ int main()
     
     cout << endl << "we have ended a year, thank you" << endl;
 	return 0;
-    
-    
-
+    }
 }

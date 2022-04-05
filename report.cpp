@@ -30,7 +30,7 @@ template<class T> void centerHeap<T>:: report_appointment()
     centerNode<T> *tmp = last_appointment;
     while (tmp != NULL)
     {
-        fout<<tmp->prof<<","<<tmp->aging<<","<<tmp->risk<<","<<cur_time-report->time<<endl;
+        fout<<tmp->prof<<","<<tmp->aging<<","<<tmp->risk<<","<<tmp->time<<endl;
         tmp = tmp -> parent;
     }
     fout.close();
@@ -42,22 +42,23 @@ template<class T> void centerHeap<T>:: report_appointment()
 template<class T> void centerHeap<T>:: report_registered()
 {
     ofstream fout("registered.txt");
-    centerNode<T> *tmp = root;
-    centerNode<T> *tmp_line = root;
+    centerNode<T> *tmp = min;
+    centerNode<T> *tmp_line = min;
     centerNode<T> *tmp_line1 = tmp_line;
-    fout<<tmp->prof<<","<<tmp->aging<<","<<tmp->risk<<","<<cur_time-tmp->time<<endl;
+    extern int date_treat;
+    fout<<tmp->prof<<","<<tmp->aging<<","<<tmp->risk<<","<<date_treat-tmp->time<<endl;
     if (tmp_line->child != NULL)                /*print第一个根节点*/
     {
-        tmp_line = tmp->child
+        tmp_line = tmp->child;
         while (tmp_line != NULL)
         {                                                       
         
             tmp_line1 = tmp_line;
-            fout<<tmp_line->prof<<","<<tmp_line->aging<<","<<tmp_line->risk<<","<<cur_time-tmp_line->time<<endl;
+            fout<<tmp_line->prof<<","<<tmp_line->aging<<","<<tmp_line->risk<<","<<date_treat-tmp_line->time<<endl;
             while (tmp_line1->left != tmp_line)
             {
                 tmp_line1 = tmp_line1->left;
-                fout<<tmp_line1->prof<<","<<tmp_line1->aging<<","<<tmp_line1->risk<<","<<cur_time-tmp_line1->time<<endl;
+                fout<<tmp_line1->prof<<","<<tmp_line1->aging<<","<<tmp_line1->risk<<","<<date_treat-tmp_line1->time<<endl;
             }
             
             tmp_line = tmp_line->child;   
@@ -65,21 +66,21 @@ template<class T> void centerHeap<T>:: report_registered()
     }
     tmp = tmp->left;
     /*************************************************************************************/
-    while (tmp != root)         /*print之后的根节点*/
+    while (tmp != min)         /*print之后的根节点*/
     {   
-        fout<<tmp->prof<<","<<tmp->aging<<","<<tmp->risk<<","<<cur_time-tmp->time<<endl;
+        fout<<tmp->prof<<","<<tmp->aging<<","<<tmp->risk<<","<<date_treat-tmp->time<<endl;
         if (tmp_line->child != NULL)
         {
-            tmp_line = tmp->child
+            tmp_line = tmp->child;
             while (tmp_line != NULL)
             {
             
                 tmp_line1 = tmp_line;
-                fout<<tmp_line->prof<<","<<tmp_line->aging<<","<<tmp_line->risk<<","<<cur_time-tmp_line->time<<endl;
+                fout<<tmp_line->prof<<","<<tmp_line->aging<<","<<tmp_line->risk<<","<<date_treat-tmp_line->time<<endl;
                 while (tmp_line1->left != tmp_line)
                 {
                     tmp_line1 = tmp_line1->left;
-                    fout<<tmp_line1->prof<<","<<tmp_line1->aging<<","<<tmp_line1->risk<<","<<cur_time-tmp_line1->time<<endl;
+                    fout<<tmp_line1->prof<<","<<tmp_line1->aging<<","<<tmp_line1->risk<<","<<date_treat-tmp_line1->time<<endl;
                 }
                 
                 tmp_line = tmp_line->child;    
@@ -121,17 +122,17 @@ template<class T> void centerHeap<T>:: month_report()
     while (tmp_appointment != NULL)
     {
         appointment++;
-        tmp_appointment = tmp_appointment->left
+        tmp_appointment = tmp_appointment->left;
     }
     
     /*找多少人还在排队*/
-    centerNode<T> *tmp = root;
-    centerNode<T> *tmp_line = root;
+    centerNode<T> *tmp = min;
+    centerNode<T> *tmp_line = min;
     centerNode<T> *tmp_line1 = tmp_line;
     waiting++;
     if (tmp_line->child != NULL)                /*print第一个根节点*/
     {
-        tmp_line = tmp->child
+        tmp_line = tmp->child;
         while (tmp_line != NULL)
         {                                                       
         
@@ -148,12 +149,12 @@ template<class T> void centerHeap<T>:: month_report()
     }
     tmp = tmp->left;
     /***************/
-    while (tmp != root)         /*print之后的根节点*/
+    while (tmp != min)         /*print之后的根节点*/
     {   
         waiting++;
         if (tmp_line->child != NULL)
         {
-            tmp_line = tmp->child
+            tmp_line = tmp->child;
             while (tmp_line != NULL)
             {
             

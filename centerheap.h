@@ -4,6 +4,8 @@
 #include <string.h>
 #include "localq.h"
 using namespace std;
+#ifndef  centerheap_h
+#define centerheap_h
 
 template<class T> class centerNode  
 {
@@ -134,9 +136,10 @@ template<class T> class centerHeap
         
         void print(centerNode<T> *node, centerNode<T> *prev, int direction);  // 打印"斐波那契堆"
 
-        void centerHeap<T>::print();
+        void print();
         
-        bool centerHeap<T>::contains(T key); //在斐波那契堆中是否存在键值为key的节点。存在返回true，否则返回false。
+        bool contains(T key); //在斐波那契堆中是否存在键值为key的节点。存在返回true，否则返回false。
 
 
 };
+ #endif

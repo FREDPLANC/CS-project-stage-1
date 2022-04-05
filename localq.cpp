@@ -22,8 +22,8 @@ int centerHeap<T>::check_nearest(centerNode<T> *node)
     int best = 100;
     int choice = 0;
     int loc_pat = node->loc;
-    for(int i == 0; i < 3; i++){
-        if(H[i]->content >= capacity){
+    for(int i = 0; i < 3; i++){
+        if(H[i]->content >= H[i]->capacity){
             continue;
         }
         result = loc_pat - H[i]->loc;
@@ -130,9 +130,10 @@ inline localQueue<patient*> build_queue(int i){
 template<class T> localQueue<T>::localQueue(int size)
 {
     maxsize = size;
-    if (size < 20)
+    if (size < 20){
         minsize = size;
         maxsize = 20;
+    }
     else
         minsize = 20;
     numitems = 0;

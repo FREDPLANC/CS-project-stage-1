@@ -559,7 +559,7 @@ void centerHeap<T>::pop_patient_wrtddl(centerNode<T> *root, int ddl) //返回指
    
 
     if (root==NULL)
-        return root;
+        return;
 
     do
     {
@@ -580,7 +580,7 @@ void centerHeap<T>::pop_patient_wrtddl(centerNode<T> *root, int ddl) //返回指
             }
            
         }else{
-            search(t->child, ddl)) 
+            pop_patient_wrtddl(t->child, ddl); 
         }
        
         t = t->right;
