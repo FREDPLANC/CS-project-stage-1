@@ -81,6 +81,6 @@ patient* N[1000];  // where patient are stored
 int len_N=0;   // the number of patient
 hospital* H[3]; //three hospital
 int content_total = 0;
-const int capacity_total;
+int capacity_total;
 #endif
 
