@@ -13,7 +13,7 @@
 #include <cstdlib>
 #include <cmath>
 #include "localq.h"
-#include "centerq.h"
+#include "centerheap.h"
 using namespace std;
 
 
@@ -564,7 +564,7 @@ void centerHeap<T>::pop_patient_wrtddl(centerNode<T> *root, int ddl) //返回指
     do
     {
         if ( t->treat_ddl == ddl){
-            t->treated_time = ddl - 1;
+            t->treated_time = ddl - 5;
             t->treated_location = check_nearest(t);
             if(last_appointment == NULL) {
                 last_appointment = min;
