@@ -52,8 +52,23 @@ template<class T> class centerNode
         right  = this;
         parent = NULL;
         child  = NULL;
+        id=value.id;//
+    
+        prof=value.prof;//
+        birth=value.birth;//
+        risk=value.risk;//
+        time=value.time;//
+        
+        aging=value.aging;//
+    
+        treat_ddl=value.treat_ddl;//
+        near_hospital=value.near_hospital;
+        loc=value.loc;//
+        strcpy(name,value.name);//
+        strcpy(contact,value.contact);//
+        strcpy(address,value.address);//
+        strcpy(status,value.status);//
     }
-
 
 };
 
@@ -71,6 +86,7 @@ template<class T> class centerHeap
         centerNode<T> **cons;    // 最大度的内存区域
         centerNode<T> *last_appointment; //储存每日预约名单的双链表, last_appointment指向今日最后一个预约的病人
         centerNode<T> *last_treatment;   //储存总治疗名单的双链表
+        centerNode<T> *last_waiting;   //储存排队的人的双链表（斐波那契堆中的每个元素）
 
         centerHeap();  //*********************************************************************************************
         ~centerHeap();  //***********************************************************************************************
@@ -93,6 +109,17 @@ template<class T> class centerHeap
         void report_treated();
         void report_appointment();
         void report_registered();
+
+        void Listsort_prof(centerNode<T>* & head);
+        void Listsort_aging(centerNode<T>* & head);
+        void Listsort_name(centerNode<T>* & head);
+        void List_registered();
+        void listmake(centerNode<T> *N);
+        centerNode<T> copy(centerNode<T> *N);
+        void set_head();
+        void add_head(centerNode<T> *N,centerNode<T> *H);
+        int count_list(centerNode<T> *head);
+        
         void week_report();
         void month_report();
 
