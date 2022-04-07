@@ -91,7 +91,6 @@ inline localQueue<patient*> build_queue(int i){
 						break;
 					case 4:
 						pat->time=(int)strtol(buffer,NULL,10);
-			    			pat->time= month*1000+day*10+am;
 						break; 
                     case 5:
                         pat->risk=(int)strtol(buffer,NULL,10);
@@ -100,7 +99,7 @@ inline localQueue<patient*> build_queue(int i){
                         strcpy(pat->contact,buffer);
                         break;
                     case 7:
-                        pat->treat_ddl=10*(int)strtol(buffer,NULL,10);
+                        pat->treat_ddl=(int)strtol(buffer,NULL,10);
                         break;
                     case 8:
                         pat->loc=(int)strtol(buffer,NULL,10);

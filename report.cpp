@@ -41,7 +41,7 @@ template<class T> void centerHeap<T>:: report_registered()
     ofstream fout("registered.txt");
     centerNode<T> *tmp = head_registered->parent;
     while (tmp != NULL)
-    {
+    {   extern int date_treat;
         fout<<tmp->prof<<","<<tmp->aging<<","<<tmp->risk<<","<<date_treat-tmp->time<<endl;
         tmp = tmp -> parent;
     }
@@ -143,9 +143,9 @@ template<class T> void centerHeap<T>:: week_report()
     List_registered();
     set_head();
     /*按照年龄排序*/
-    Listsort_aging(&last_appointment);
-    Listsort_aging(&last_treatment);
-    Listsort_aging(&last_waiting);
+    Listsort_aging(last_appointment);
+    Listsort_aging(last_treatment);
+    Listsort_aging(last_waiting);
 
     /*按照职业排序
     Listsort_prof(&last_appointment);
@@ -175,6 +175,7 @@ template<class T> int centerHeap<T>:: count_list(centerNode<T> *head)
         counter++;
         tmp = tmp->parent;
     }
+    return counter;
 }
 
 /*为list添加头节点*/
@@ -190,23 +191,23 @@ template<class T> void centerHeap<T>:: set_head()
 }
 template<class T> void centerHeap<T>:: add_head(centerNode<T> *N,centerNode<T> *H)
 {
-    N->next=H;
-    H->parent=N;
+    N->child = H;
+    H->parent = N;
 }
 
 
 
 //线性表的排序,采用冒泡排序,直接遍历链表**********用职业排序
-template<class T> void centerHeap<T>:: Listsort_prof(centerNode<T>*  & head) 
+template<class T> void centerHeap<T>:: Listsort_prof(centerNode<T>*   head) 
 {
-    int number = count_list(*head);
+    int number = count_list(head);
     int i = 0;
     int j = 0;
     //用于变量链表
-    centerNode * L = head;
+    centerNode<T> * L = head;
     //作为一个临时量
-    centerNode * p;
-    centerNode * p1;
+    centerNode<T> * p;
+    centerNode<T> * p1;
     //如果链表为空直接返回
     for (i = 0; i < number - 1; i++) 
     {
@@ -219,7 +220,7 @@ template<class T> void centerHeap<T>:: Listsort_prof(centerNode<T>*  & head)
             //如果前面的那个比后面的那个大，就交换它们之间的是数据域
             if (p->prof > p1->prof) 
             {
-                Elemtype temp = p;
+                centerNode<T>* temp = p;
                 p1->parent->child = p;
                 p->child->parent = p1;
                 p1->child = p->child;
@@ -238,16 +239,16 @@ template<class T> void centerHeap<T>:: Listsort_prof(centerNode<T>*  & head)
 
 
 //线性表的排序,采用冒泡排序,直接遍历链表**********用年龄排序
-template<class T> void centerHeap<T>:: Listsort_aging(centerNode<T>*  & head) 
+template<class T> void centerHeap<T>:: Listsort_aging(centerNode<T>*  head) 
 {
-    int number = count_list(*head);
+    int number = count_list(head);
     int i = 0;
     int j = 0;
     //用于变量链表
-    centerNode * L = head;
+    centerNode<T> * L = head;
     //作为一个临时量
-    centerNode * p;
-    centerNode * p1;
+    centerNode<T> * p;
+    centerNode<T> * p1;
     //如果链表为空直接返回
     for (i = 0; i < number - 1; i++) 
     {
@@ -260,7 +261,7 @@ template<class T> void centerHeap<T>:: Listsort_aging(centerNode<T>*  & head)
             //如果前面的那个比后面的那个大，就交换它们之间的是数据域
             if (p->aging > p1->aging) 
             {
-                Elemtype temp = p;
+                centerNode<T> * temp = p;
                 p1->parent->child = p;
                 p->child->parent = p1;
                 p1->child = p->child;
@@ -278,16 +279,16 @@ template<class T> void centerHeap<T>:: Listsort_aging(centerNode<T>*  & head)
 }
 
 //线性表的排序,采用冒泡排序,直接遍历链表**********用姓名排序
-template<class T> void centerHeap<T>:: Listsort_name(centerNode<T>*  & head) 
+template<class T> void centerHeap<T>:: Listsort_name(centerNode<T>*   head) 
 {
-    int number = count_list(*head);
+    int number = count_list(head);
     int i = 0;
     int j = 0;
     //用于变量链表
-    centerNode * L = head;
+    centerNode<T> * L = head;
     //作为一个临时量
-    centerNode * p;
-    centerNode * p1;
+    centerNode<T> * p;
+    centerNode<T> * p1;
     //如果链表为空直接返回
     for (i = 0; i < number - 1; i++) 
     {
@@ -300,7 +301,7 @@ template<class T> void centerHeap<T>:: Listsort_name(centerNode<T>*  & head)
             //如果前面的那个比后面的那个大，就交换它们之间的是数据域
             if ((p->name).compare(p1->name) == 1) 
             {
-                Elemtype temp = p;
+                centerNode<T> *temp = p;
                 p1->parent->child = p;
                 p->child->parent = p1;
                 p1->child = p->child;
@@ -374,35 +375,35 @@ void centerHeap<T>::listmake(centerNode<T>* N)
 {
     centerNode<T>* node;
     node=copy(N);
-    last_waiting->next=node;
+    last_waiting->child=node;
     node->parent=last_waiting;
     last_waiting=node;
 
 
 }
 template <class T>
-centerNode<T> centerHeap<T>::copy(centerNode<T>* N)
+centerNode<T>* centerHeap<T>::copy(centerNode<T>* N)
 {
     centerNode<T>* node;
-    node.key=N.key;
-    node.degree=N.degree;
-    node.id=N.id;
+    node->key=N->key;
+    node->degree=N->degree;
+    node->id=N->id;
     
-    node.prof=N.prof;
-    node.birth=N.birth;
-    node.risk=N.risk;
-    node.time=N.time;
-    node.treated_time=N.treated_time;
-    node.treated_location=N.treated_location;
-    node.aging=N.aging;
+    node->prof=N->prof;
+    node->birth=N->birth;
+    node->risk=N->risk;
+    node->time=N->time;
+    node->treated_time=N->treated_time;
+    node->treated_location=N->treated_location;
+    node->aging=N->aging;
     
-    node.treat_ddl=N.treat_ddl;
-    node.near_hospital=N.near_hospital;
-    node.loc=N.loc;
-    strcpy(node.name,N.name);
-    strcpy(node.contact,N.contact);
-    strcpy(node.address,N.address);
-    strcpy(node.status,N.status);
+    node->treat_ddl=N->treat_ddl;
+    node->near_hospital=N->near_hospital;
+    node->loc=N->loc;
+    strcpy(node->name,N->name);
+    strcpy(node->contact,N->contact);
+    strcpy(node->address,N->address);
+    strcpy(node->status,N->status);
     
     return node;
 }
