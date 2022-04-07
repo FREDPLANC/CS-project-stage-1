@@ -1,3 +1,5 @@
+#ifndef _process_
+#define _process_
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
@@ -61,7 +63,7 @@ template<class T> void  centerHeap<T>::withdraw(int id) //撤销在预约名单�
 {
     centerNode<T> *temp = last_appointment;
     
-    if(centerNode<T>* p = search_id(id)) {
+    if(centerNode<T>* p = search_id(min,id)) {
         remove(p);
         if(withdraw_list[id] == 0) withdraw_number++;
         withdraw_list[id] = 1;
@@ -79,3 +81,4 @@ template<class T> void  centerHeap<T>::withdraw(int id) //撤销在预约名单�
     }
     
 }
+#endif

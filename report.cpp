@@ -1,3 +1,5 @@
+#ifndef _report_
+#define _report_
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
@@ -403,7 +405,8 @@ centerNode<T>* centerHeap<T>::copy(centerNode<T>* N)
     strcpy(node->name,N->name);
     strcpy(node->contact,N->contact);
     strcpy(node->address,N->address);
-    strcpy(node->status,N->status);
+    node->status =  N->status;
     
     return node;
 }
+#endif

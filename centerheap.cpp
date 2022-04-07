@@ -1,9 +1,3 @@
-/**
- * C++: 斐波那契堆
- *
- * @author skywang
- * @date 2014/04/06
- */
 
 #ifndef _FIBONACCI_TREE_HPP_
 #define _FIBONACCI_TREE_HPP_

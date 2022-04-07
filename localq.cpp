@@ -1,3 +1,6 @@
+#ifndef _localq_
+#define _localq_
+
 #include <cstdio>
 #include "stdlib.h"
 #include <fstream>
@@ -5,6 +8,7 @@
 #include "localq.h"
 #include "centerheap.h"
 using namespace std;
+
 
 void daily_hosp_setZero(void){
     for(int i = 0; i < 3;i++){
@@ -45,7 +49,7 @@ int centerHeap<T>::check_nearest(centerNode<T> *node)
 
 
 
-inline localQueue<patient*> build_queue(int i){
+localQueue<patient*>  build_queue (int i){
     localQueue<patient*> palist;
     char filename[256];
     cout<<"请输入文件名"<<endl;
@@ -63,14 +67,18 @@ inline localQueue<patient*> build_queue(int i){
         //patient* ill = new patient();
         int item;
         item = 0;
+        extern int month;
+        extern int day;
+        extern int am;
+        patient* pat = new patient();
         while(item >= 0){
-            char buffer[64]; // the size of each item;
-            infile.getline(buffer,64,',');
+            char buffer[128]; // the size of each item;
+            infile.getline(buffer,128,',');
             while(buffer[0] == '\n'){
                 strcpy(buffer,buffer + 1);
             }
             item++;
-            patient* pat = new patient();
+            
             switch (item) {  // You can refer to the order in the sample csv.
 					case 1:
 						/*ill->id=(int)strtol(buf,NULL,10);*/
@@ -82,34 +90,47 @@ inline localQueue<patient*> build_queue(int i){
 						}
 						//pat->id=len_N;  // Set the id as the index of the array N.
                         pat->id = (int)strtol(buffer,NULL,10);
+                        cout << pat->id<<endl;
+                        
 						break;
 					case 2:
 						strcpy(pat->name,buffer);
+                        cout << pat->name<<endl;
 						break;
 					case 3:
 						pat->prof=(int)strtol(buffer,NULL,10);
+                        cout << pat->prof<<endl;
 						break;
 					case 4:
 						pat->time=(int)strtol(buffer,NULL,10);
+                        pat->time=month*1000+day*10+am;
+                        cout << pat->time<<endl;
 						break; 
                     case 5:
                         pat->risk=(int)strtol(buffer,NULL,10);
+                        cout << pat->risk<<endl;
                         break;
                     case 6:
                         strcpy(pat->contact,buffer);
+                        cout << pat->contact<<endl;
                         break;
                     case 7:
-                        pat->treat_ddl=(int)strtol(buffer,NULL,10);
+                        pat->treat_ddl=10*(int)strtol(buffer,NULL,10);
+                        cout << pat->treat_ddl<<endl;
                         break;
                     case 8:
                         pat->loc=(int)strtol(buffer,NULL,10);
+                        cout << pat->loc<<endl;
 						break;
                     case 9:
+                        
                         pat->birth=(int)strtol(buffer,NULL,10);
+                        cout << pat->birth<<endl;
                         (*pat).age_rank();
                         break;
                     case 10:
-                        strcpy(pat->status,buffer);
+                        pat->status=(int)strtol(buffer,NULL,10);
+                        cout << pat->status<<endl;
                         item = -2;
                         break;
                         
@@ -118,9 +139,11 @@ inline localQueue<patient*> build_queue(int i){
             }
             if(item == -2){
                 N[len_N++]=pat; 
+                
                 palist.En_queue(pat);  // This pointer to this patient is stored to the vector palist.  
                  
-            }   
+            }
+
         }   
     }
     infile.close();
@@ -196,7 +219,7 @@ template<class T> T localQueue<T>::rear(void)
     }
 }
 
-template<class T> T localQueue<T>::De_queue(void){ // let a element go out a queue
+template<class T> patient localQueue<T>::De_queue(void){ // let a element go out a queue
     if (isNull())
 	{
 		cout<<"The queue is empty~";
@@ -205,7 +228,7 @@ template<class T> T localQueue<T>::De_queue(void){ // let a element go out a que
     if(((numitems -1) <= maxsize * 0.25) && (2*minsize < maxsize)){
         deallocate();
     }
-    T ele_out = reprarray[first];  // the element to be out;
+    patient ele_out = *(reprarray[first]);  // the element to be out;
 	first += 1;
 	first = first % maxsize;
     numitems--;
@@ -217,7 +240,9 @@ template<class T> void localQueue<T>::En_queue(T element){ // let a element go i
         allocate();
 	last += 1;
     last = last % maxsize;
+    
 	reprarray[last] = element;
+    //cout << (reprarray[last])->prof<<endl;
     numitems++;
     return;
 }
@@ -277,3 +302,4 @@ void patient::age_rank() {  // for aged < 12, we use 1 to represent the age grou
         this->aging = 7;
     }  
 }
+#endif

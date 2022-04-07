@@ -9,6 +9,7 @@
 #include "localq.cpp"
 #include "process.cpp"
 #include "report.cpp"
+#include "build.cpp"
 using namespace std;
 
 int months[13]={0,31,28,31,30,31,30,31,31,30,31,30,31};

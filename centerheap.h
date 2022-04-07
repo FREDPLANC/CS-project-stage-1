@@ -28,7 +28,7 @@ template<class T> class centerNode
     int treated_time;  //被治好的时间
     int treated_location;   //被治好的地点
 	int aging;   // the age group he is in
-	char status[10]; // whether he is in waiting , appointed, or else
+	int status; // whether he is in waiting , appointed, or else
 		
 	int treat_ddl;  //the deadline of the treated date
 	int near_hospital;    //the closed hospital who can get treated
@@ -70,7 +70,7 @@ template<class T> class centerNode
         strcpy(name,value.name);//
         strcpy(contact,value.contact);//
         strcpy(address,value.address);//
-        strcpy(status,value.status);//
+        status = value.status;
     }
 
 };
@@ -110,7 +110,7 @@ template<class T> class centerHeap
         void withdraw(int id);
         int check_nearest(centerNode<T> *node);
         void build(); //读取医院普通队列
-        void add_patient(localQueue<int>* Q);
+        void add_patient(localQueue<patient*> Q);
         void insert(patient p);
         void report_treated();
         void report_appointment();
