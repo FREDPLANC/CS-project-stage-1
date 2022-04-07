@@ -100,7 +100,7 @@ inline localQueue<patient*> build_queue(int i){
                         strcpy(pat->contact,buffer);
                         break;
                     case 7:
-                        pat->treat_ddl=(int)strtol(buffer,NULL,10);
+                        pat->treat_ddl=10*(int)strtol(buffer,NULL,10);
                         break;
                     case 8:
                         pat->loc=(int)strtol(buffer,NULL,10);
