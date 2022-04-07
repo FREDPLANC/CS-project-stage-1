@@ -91,6 +91,7 @@ inline localQueue<patient*> build_queue(int i){
 						break;
 					case 4:
 						pat->time=(int)strtol(buffer,NULL,10);
+			    			pat->time= month*1000+day*10+am;
 						break; 
                     case 5:
                         pat->risk=(int)strtol(buffer,NULL,10);
