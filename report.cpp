@@ -97,12 +97,36 @@ template<class T> void centerHeap<T>:: month_report()
         tmp_appointment = tmp_appointment->parent;
     }
     
-    /*找多少人还在排队*/
+    
+    
+    
+    if (min == NULL)
+    {
+        last_waiting = NULL;
+    }else{
+        int i=0;
+        centerNode<T> *p;
+        last_waiting = new centerNode<T>(min);
+        if (min==NULL)
+            return ;
+
+        listmake(min);
+        p = min;
+        do {
+            i++;
+            
+
+            iteregister(p->child, p, 1);
+            p = p->right;
+            if(p != NULL && p != min) listmake(p);
+        } while (p != min);
+    }
+   /*
     centerNode<T> *tmp = min;
     centerNode<T> *tmp_line = min;
     centerNode<T> *tmp_line1 = tmp_line;
     waiting++;
-    if (tmp_line->child != NULL)                /*print第一个根节点*/
+    if (tmp_line->child != NULL)               
     {
         tmp_line = tmp->child;
         while (tmp_line != NULL)
@@ -120,8 +144,8 @@ template<class T> void centerHeap<T>:: month_report()
         }
     }
     tmp = tmp->left;
-    /***************/
-    while (tmp != min)         /*print之后的根节点*/
+    
+    while (tmp != min)        
     {   
         waiting++;
         if (tmp_line->child != NULL)
@@ -142,6 +166,7 @@ template<class T> void centerHeap<T>:: month_report()
             }
         }
         tmp = tmp->left;
+        */
     }
     registered = waiting + appointment + treatment;
     waiting_total = appointment + waiting;
@@ -182,6 +207,7 @@ template<class T> void centerHeap<T>:: week_report()
     report_appointment(head_appointment);
     report_treated(head_treatment);
     report_registered(head_waiting);
+    cout << list_numb<<endl;
 }
 
 
@@ -398,11 +424,54 @@ template<class T> void centerHeap<T>:: Listsort_name(centerNode<T>*   head)
         }
     }
 }
+template <class T>
+void centerHeap<T>::iteregister(centerNode<T> *node, centerNode<T> *prev, int direction)
+{
+    centerNode<T> *start=node;
 
+    if (node==NULL)
+        return ;
+    do
+    {
+        if (direction == 1)
+           listmake(node);
+        else
+            listmake(node);
+
+        if (node->child != NULL)
+            iteregister(node->child, node, 1);
+
+        // 兄弟节点
+        prev = node;
+        node = node->right;
+        direction = 2;
+    } while(node != start);
+}
 //queueing的人形成一个list
 template<class T> void centerHeap<T>:: List_registered()
 {
     if (min == NULL)
+    {
+        last_waiting = NULL;
+    }else{
+        int i=0;
+        centerNode<T> *p;
+        last_waiting = new centerNode<T>(min);
+        if (min==NULL)
+            return ;
+
+        listmake(min);
+        p = min;
+        do {
+            i++;
+            
+
+            iteregister(p->child, p, 1);
+            p = p->right;
+            if(p != NULL && p != min) listmake(p);
+        } while (p != min);
+    }
+    /*if (min == NULL)
     {
         last_waiting = NULL;
     }
@@ -413,9 +482,9 @@ template<class T> void centerHeap<T>:: List_registered()
         centerNode<T> *tmp_line1 = tmp_line;
         extern int date_treat;
         last_waiting = new centerNode<T>(min);
-        if (tmp_line->child != NULL)                /*print第一个根节点*/
+        if (tmp_line->child != NULL)              
         {
-            listmake(tmp);
+            //listmake(tmp);
             tmp_line = tmp->child;
             while (tmp_line != NULL)
             {                                                       
@@ -433,8 +502,8 @@ template<class T> void centerHeap<T>:: List_registered()
         }
         tmp = tmp->left;
         tmp_line = tmp;
-        /*************************************************************************************/
-        while (tmp != min)         /*print之后的根节点*/
+        
+        while (tmp != min)       
         {   
             listmake(tmp);
             if (tmp->child != NULL)
@@ -456,7 +525,7 @@ template<class T> void centerHeap<T>:: List_registered()
             }
             tmp = tmp->left;
         }
-    }
+    } */
     
     
 }
@@ -469,7 +538,8 @@ void centerHeap<T>::listmake(centerNode<T>* N)
     last_waiting->child=node;
     node->parent=last_waiting;
     last_waiting=node;
-
+    list_numb ++;
+    cout << N->key <<endl;
 
 }
 /*template <class T>

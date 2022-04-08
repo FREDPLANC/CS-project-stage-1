@@ -114,6 +114,7 @@ template<class T> class centerHeap
         int maxDegree;      // 最大度
         int withdraw_list[1000]; //查询是否该id曾经撤销过预约或等待
         int withdraw_number;     //记录已经撤销的人数
+        int list_numb = 0;
         centerNode<T> *min;    // 最小节点(某个最小堆的根节点)
         centerNode<T> **cons;    // 最大度的内存区域
         centerNode<T> *last_appointment; //储存每日预约名单的双链表, last_appointment指向今日最后一个预约的病人
@@ -157,6 +158,10 @@ template<class T> class centerHeap
         
         void week_report();
         void month_report();
+        void print(centerNode<T> *node, centerNode<T> *prev, int direction);  // 打印"斐波那契堆"
+
+        void print();
+        void iteregister(centerNode<T> *node, centerNode<T> *prev, int direction);
 
     private:
         
@@ -196,9 +201,7 @@ template<class T> class centerHeap
         
         void destroyNode(centerNode<T> *node);  // 销毁斐波那契堆
         
-        void print(centerNode<T> *node, centerNode<T> *prev, int direction);  // 打印"斐波那契堆"
-
-        void print();
+       
         
         bool contains(T key); //在斐波那契堆中是否存在键值为key的节点。存在返回true，否则返回false。
 

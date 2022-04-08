@@ -61,5 +61,6 @@ void centerHeap<T>::insert(patient p)
     node = new centerNode<T>(p);
     if (node == NULL) return ;
     insert(node);
+    list_numb--;
     
 }

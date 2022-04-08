@@ -95,7 +95,8 @@ void choice_0(){
 	day++;am=0;
 	week++;
 	if(week==7){
-		center.week_report();
+		//center.print();
+        center.week_report();
 		week=0;
 	}
 }
