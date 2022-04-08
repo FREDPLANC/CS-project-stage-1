@@ -12,28 +12,28 @@
 #include "build.cpp"
 using namespace std;
 
-int months[13]={0,31,28,31,30,31,30,31,31,30,31,30,31};
-int month = 1;
+int months[13]={0,31,28,31,30,31,30,31,31,30,31,30,31};// the exact days of every month
+int month = 1; // global variables, record the time of the date in the program
 int day = 1;
 int am = 0;
 int week = 0;
 int date_treat;
 centerHeap<int> center;
-void choice_0();
+void choice_0(); // the interactive interface of different choice entered by the user
 void choice_1();
 void choice_2();
 void choice_3();
 
-void half_day_process(){
+void half_day_process(){ // when time flows a day, it needs the following steps
     if(am != 0){
         return;
     }
-    daily_hosp_setZero();
+    daily_hosp_setZero();  // clear the content patient of each hospital
     extern int date_treat;
-    date_treat = month*1000 + day*10 + am;
+    date_treat = month*1000 + day*10 + am; // the converted time
     center.build(); // insert the csv daily data;
-    center.treatment_process(date_treat);
-    center.appointment_process(date_treat);
+    center.treatment_process(date_treat); // treat queue generated
+    center.appointment_process(date_treat);  // appointment queue generated
 }
 
 
@@ -72,7 +72,7 @@ void choice_0(){
     
 	if(day==28){
 		if(month==2){
-			center.month_report();
+			center.month_report(); // if the month is ended, begin the month report
 			month++;
             day=0;
 		}
@@ -97,7 +97,7 @@ void choice_0(){
 	week++;
 	if(week==7){
 		//center.print();
-        center.week_report();
+        center.week_report(); // if a week comes to an end, begin a week report
 		week=0;
 	}
 }
@@ -108,7 +108,7 @@ int main()
     capacity_total = 0;
     int choice_user;
     for(int i = 0; i < 3;i++){
-        hospital* hop = new hospital();
+        hospital* hop = new hospital(); // initialize the hospital information
         hop->hosp_id = i;
         hop->capacity = 1+i;
         hop->content = 0;

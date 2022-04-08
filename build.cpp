@@ -13,7 +13,7 @@ using namespace std;
 
 
 template <class T>
-void centerHeap<T>::build(){ //将本地的队列加入到中央的堆内部
+void centerHeap<T>::build(){//Add local queues to the central heap
     
     localQueue <patient*> Q1 = build_queue(1); //first build the local queue;
     localQueue<patient*> Q2 = build_queue(2);
@@ -31,7 +31,7 @@ void centerHeap<T>::build(){ //将本地的队列加入到中央的堆内部
     }
     for (int i=1;i<=l2;i++)
     {   
-        patient p2=Q2.De_queue() ;
+        patient p2=Q2.De_queue() ;// same for other queues
         add_patient(p2);
     }
     for (int i=1;i<=l3;i++)
@@ -42,7 +42,7 @@ void centerHeap<T>::build(){ //将本地的队列加入到中央的堆内部
 
 }
 template <class T>
-void centerHeap<T>::add_patient(patient p) //将本地队列的元素弹出并构建成centerHeap
+void centerHeap<T>::add_patient(patient p) //Eject the elements of the local queue and build them into centerHeap
 {
     
     if (p.status==54188)
@@ -55,7 +55,7 @@ void centerHeap<T>::add_patient(patient p) //将本地队列的元素弹出并�
     
 }
 template <class T>
-void centerHeap<T>::insert(patient p)
+void centerHeap<T>::insert(patient p) // insert an element into the heap
 {
     centerNode<T> *node;
     node = new centerNode<T>(p);

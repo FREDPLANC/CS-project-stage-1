@@ -63,7 +63,7 @@ localQueue<patient*>  build_queue (int i){
 
     while(infile.good()){
         
-        //.csv文件用","作为分隔符
+        //.csv files use commas (,) as delimiters
         if(omitline == 0){
             char omitting[256];
             infile.getline(omitting,256);
@@ -78,72 +78,72 @@ localQueue<patient*>  build_queue (int i){
         extern int am;
         string line;
         while (getline(infile, line)){
-            //打印整行字符串
+            // Prints a full line of strings
             cout << "each line : " << line << endl;
             patient* pat = new patient();
-            //解析每行的数据
+            // Parse the data for each row
             stringstream ss(line);
             string _sub;
             vector<string> subArray;
     
-            //按照逗号分隔
+            // Separate them by commas
             while (getline(ss, _sub, ','))
                 subArray.push_back(_sub);
             
     
-            //输出解析后的每行数据
+            // Outputs each parsed line of data
             for (size_t i=0; i<subArray.size(); ++i)
             {
                 
                 switch (i+1) {  // You can refer to the order in the sample csv.
 					case 1:
                         pat->id = atoi(subArray[i].c_str());
-                        cout << pat->id<<endl;
+                        //cout << pat->id<<endl;
 						break;
 					case 2:
                         subArray[i].copy(pat->name, subArray[i].length(), 0);
                         *(pat->name+subArray[i].length())='\0';
-                        cout << pat->name<<endl;
+                        //cout << pat->name<<endl;
 						break;
 					case 3:
                         pat->prof = atoi(subArray[i].c_str());
-                        cout << pat->prof<<endl;
+                        //cout << pat->prof<<endl;
 						break;
 					case 4:
 						pat->time=atoi(subArray[i].c_str());
                         pat->time=month*1000+day*10+am;
-                        cout << pat->time<<endl;
+                        //cout << pat->time<<endl;
 						break; 
                     case 5:
                         pat->risk=atoi(subArray[i].c_str());
                         
-                        cout << pat->risk<<endl;
+                        //cout << pat->risk<<endl;
                         break;
                     case 6:
                         subArray[i].copy(pat->contact, subArray[i].length(), 0);
                         *(pat->contact+subArray[i].length())='\0';
-                        cout << pat->contact<<endl;
+                        //cout << pat->contact<<endl;
                         break;
                     case 7:
                         pat->treat_ddl=10*atoi(subArray[i].c_str());
                         
-                        cout << pat->treat_ddl<<endl;
+                        //cout << pat->treat_ddl<<endl;
                         break;
                     case 8:
                         pat->loc=atoi(subArray[i].c_str());
                         
-                        cout << pat->loc<<endl;
+                        //cout << pat->loc<<endl;
 						break;
                     case 9:
                         pat->birth=atoi(subArray[i].c_str());
                         
-                        cout << pat->birth<<endl;
+                        //cout << pat->birth<<endl;
                         (*pat).age_rank();
                         break;
                     case 10:
                         pat->status=atoi(subArray[i].c_str());
                         
-                        cout << pat->status<<endl;
+                        //cout << pat->status<<endl;
                         item = -2;
                         break;
                         
@@ -314,7 +314,7 @@ template<class T> patient localQueue<T>::De_queue(void){ // let a element go out
     if(((numitems -1) <= maxsize * 0.25) && (2*minsize < maxsize)){
         deallocate();
     }
-    cout << (reprarray[first])->id << endl;
+    //cout << (reprarray[first])->id << endl;
     patient ele_out = *(reprarray[first]);  // the element to be out;
 	first += 1;
 	first = first % maxsize;

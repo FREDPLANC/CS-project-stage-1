@@ -7,21 +7,20 @@
 #include "localq.h"
 #include "centerheap.h"
 using namespace std;
-//处理预约和撤销操作
-//当天首先处理治疗名单, 即首先调用withdraw 函数撤销在预约名单里(此时预约名单相当于今日的治疗名单)和中心队列等待中的待撤销病人
-//之后,把当天更新前的预约名单里的病人全部放在当天治疗名单中, 预约名单清零
-//之后再更新今日的预约名单
-
-//预约名单中优先安排下一天是ddl(date +1)的病人, 之后再按照剩下容量弹出主队列优先病人
-//capacity_total 应该为const全局变量, 记录所有医院加起来的每日总容量
-//content_total 记录目前今日有多少病人已经预约
+// Handle reservation and cancellation operations
+// We will first process the treatment list on that day, that is, we will call the withdraw function to withdraw the patients in the reservation list (at this point, the reservation list is equivalent to today's treatment list) and those waiting in the central queue to be withdrawn
+// After that, all the patients in the appointment list before the update were put into the treatment list of the same day, and the appointment list was cleared
+// We will update today's appointment list later
+// Patients with DDL (date +1) on the next day will be prioritized in the appointment list, and then the remaining capacity will be displayed as the main queue of priority patients
+// Capacity_total should be a const global variable that records the total daily capacity of all hospitals added up
+//content_total Records how many appointments are made today
 /*******************************************************************************************************************/
 template<class T> void  centerHeap<T>::appointment_process(int date )
 {   extern int capacity_total;
     extern int content_total;
-    pop_patient_wrtddl(min,date+10);  // 在ddl之前一天就要进行治疗,因此前第二天需要预约
+    pop_patient_wrtddl(min,date+10);  // The treatment is scheduled one day before DDL, so an appointment is required the day before
    int rest_capacity = capacity_total - content_total;
-    for (int i = 0; i < rest_capacity && min != NULL;i++){ //防止超出当日所有医院加起来的每日总容量
+    for (int i = 0; i < rest_capacity && min != NULL;i++){ // To prevent exceeding the daily capacity of all hospitals combined on that day
         min->treated_time = date + 5;
         min->treated_location = check_nearest(min);
         //total_appointment_num++;
@@ -42,7 +41,7 @@ template<class T> void  centerHeap<T>::appointment_process(int date )
     cout<< "abcdfuckyou" << total_appointment_num << endl;
     return;
 }
-template<class T> void centerHeap<T>::treatment_process(int date)  // 处理治疗, 把前天的预约名单里的病人全部倒入治疗名单,预约名单清零
+template<class T> void centerHeap<T>::treatment_process(int date)  // Deal with the treatment, add all the patients in the appointment list of the day before yesterday into the treatment list, and clear the appointment list
 {  
     centerNode<T> *temp;
     
@@ -61,20 +60,20 @@ template<class T> void centerHeap<T>::treatment_process(int date)  // 处理治�
     return;
 
 }  
-template<class T> void  centerHeap<T>::withdraw(int id) //撤销在预约名单和中心队列里的指定病人
+template<class T> void  centerHeap<T>::withdraw(int id) // Cancel designated patients from the appointment list and center queue
 {
     centerNode<T> *temp = last_appointment;
     
     if(centerNode<T>* p = search_id(min,id)) {
         remove(p);
-        if(withdraw_list[id] == 0) withdraw_number++;
+        if(withdraw_list[id] == 0) withdraw_number++; // If this person has not revoked, the number of revoked is increased by one
         withdraw_list[id] = 1;
     }else{
         while(temp != NULL){
             if(temp->id == id) {
                 temp->child->parent = temp->parent;
                 temp->parent->child = temp->child;
-                if(withdraw_list[id] == 0) withdraw_number++; //若此人没有撤销过, 则撤销人数加一
+                if(withdraw_list[id] == 0) withdraw_number++; // If this person has not revoked, the number of revoked is increased by one
                 withdraw_list[id] = 1;
             }
             temp = temp->parent;

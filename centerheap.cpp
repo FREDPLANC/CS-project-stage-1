@@ -12,8 +12,8 @@ using namespace std;
 
 
 /*
- * 构造函数
- */
+ Constructor
+*/
 template <class T>
 centerHeap<T>::centerHeap()
 {
@@ -28,15 +28,15 @@ centerHeap<T>::centerHeap()
 }
 
 /*
- * 析构函数
- */
+Destructor
+*/
 template <class T>
 centerHeap<T>::~centerHeap()
 {
 }
 
 /*
- * 将node从双链表移除
+ * remove the node from the doubly-linked list
  */
 template <class T>
 void centerHeap<T>::removeNode(centerNode<T> *node)
@@ -46,9 +46,7 @@ void centerHeap<T>::removeNode(centerNode<T> *node)
 }
 
 /*
- * 将node堆结点加入root结点之前(循环链表中)
- *   a …… root
- *   a …… node …… root
+ * adding node heap in front of the root node(in linked list)
 */
 template <class T>
 void centerHeap<T>::addNode(centerNode<T> *node, centerNode<T> *root)
@@ -60,7 +58,7 @@ void centerHeap<T>::addNode(centerNode<T> *node, centerNode<T> *root)
 }
 
 /*
- * 将节点node插入到斐波那契堆中
+ * insert the node into the fibonacci heap
  */
 template <class T>
 void centerHeap<T>::insert(centerNode<T> *node)
@@ -77,7 +75,7 @@ void centerHeap<T>::insert(centerNode<T> *node)
 }
 
 /*
- * 新建键值为key的节点，并将其插入到斐波那契堆中
+ * create a new node with key value ad key, then insert it into the fibonacci heap
  */
 template <class T>
 void centerHeap<T>::insert(T key)
@@ -92,9 +90,7 @@ void centerHeap<T>::insert(T key)
 }
 
 /*
- * 将双向链表b链接到双向链表a的后面
- *
- * 注意： 此处a和b都是双向链表
+ * Link bidirectional linked list B to the end of bidirectional linked list A
  */
 template <class T>
 void centerHeap<T>::catList(centerNode<T> *a, centerNode<T> *b)
@@ -110,7 +106,7 @@ void centerHeap<T>::catList(centerNode<T> *a, centerNode<T> *b)
 
 
 /*
- * 将other合并到当前堆中
+ Merge Other into the current heap
  */
 template <class T>
 void centerHeap<T>::combine(centerHeap<T> *other)
@@ -121,21 +117,21 @@ void centerHeap<T>::combine(centerHeap<T> *other)
     if(other->maxDegree > this->maxDegree)
         swap(*this, *other);
 
-    if((this->min) == NULL)                // this无"最小节点"
+    if((this->min) == NULL)                // this has no "minimum node"
     {
         this->min = other->min;
         this->keyNum = other->keyNum;
         free(other->cons);
         delete other;
     }
-    else if((other->min) == NULL)           // this有"最小节点" && other无"最小节点"
+    else if((other->min) == NULL)           // this has the minimum node and the other has no min
     {
         free(other->cons);
         delete other;
-    }                                       // this有"最小节点" && other有"最小节点"
+    }                                       // this has the min and the other also have
     else
     {
-        // 将"other中根链表"添加到"this"中
+        // Add "other root list "to "this"
         catList(this->min, other->min);
 
         if (this->min->key > other->min->key)
@@ -147,8 +143,7 @@ void centerHeap<T>::combine(centerHeap<T> *other)
 }
 
 /*
- * 将"堆的最小结点"从根链表中移除，
- * 这意味着"将最小节点所属的树"从堆中移除!
+Remove the "smallest node of the heap" from the root list
  */
 template <class T>
 centerNode<T>* centerHeap<T>::extractMin()
@@ -168,14 +163,14 @@ centerNode<T>* centerHeap<T>::extractMin()
 }
 
 /*
- * 将node链接到root根结点
+ * link node to the root node
  */
 template <class T>
 void centerHeap<T>::link(centerNode<T>* node, centerNode<T>* root)
 {
-    // 将node从双链表中移除
+    //remove node from the doubly-linked list
     removeNode(node);
-    // 将node设为root的孩子
+    //set node as the child of the root
     if (root->child == NULL)
         root->child = node;
     else
@@ -187,26 +182,25 @@ void centerHeap<T>::link(centerNode<T>* node, centerNode<T>* root)
 }
 
 /*
- * 创建consolidate所需空间
+  make space for the operation "consolidate"
  */
 template <class T>
 void centerHeap<T>::makeCons()
 {
     int old = maxDegree;
 
-    // 计算log2(keyNum)，"+1"意味着向上取整！
-    // ex. log2(13) = 3，向上取整为3+1=4。
+    // calculate the log2(keyNum)
     maxDegree = (log(keyNum)/log(2.0)) + 1;
     if (old >= maxDegree)
         return ;
 
-    // 因为度为maxDegree可能被合并，所以要maxDegree+1
+     // Since degree maxDegree can be merged, maxDegree+1 is required
     cons = (centerNode<T> **)realloc(cons,
             sizeof(centerHeap<T> *) * (maxDegree + 1));
 }
 
 /*
- * 合并斐波那契堆的根链表中左右相同度数的树
+ Merges the left and right trees of the same degree in the root list of the Fibonacci heap
  */
 template <class T>
 void centerHeap<T>::consolidate()
@@ -214,25 +208,25 @@ void centerHeap<T>::consolidate()
     int i, d, D;
     centerNode<T> *x, *y, *tmp;
 
-    makeCons();//开辟哈希所用空间
+    makeCons();// open up the space used for hashing
     D = maxDegree + 1;
 
     for (i = 0; i < D; i++)
         cons[i] = NULL;
 
-    // 合并相同度的根节点，使每个度数的树唯一
+    // Merge the root nodes of the same degree so that each degree of the tree is unique
     while (min != NULL)
     {
-        x = extractMin();                // 取出堆中的最小树(最小节点所在的树)
-        d = x->degree;                    // 获取最小树的度数
-        // cons[d] != NULL，意味着有两棵树(x和y)的"度数"相同。
+        x = extractMin();                // Select the smallest node in the heap.
+        d = x->degree;                    // Get the degree of the minimum tree
+        // cons[d] != NULL，
         while (cons[d] != NULL)
         {
-            y = cons[d];                // y是"与x的度数相同的树"
-            if (x->key > y->key)        // 保证x的键值比y小
+            y = cons[d];                
+            if (x->key > y->key)        
                 swap(x, y);
 
-            link(y, x);    // 将y链接到x中
+            link(y, x);    
             cons[d] = NULL;
             d++;
         }
@@ -240,7 +234,7 @@ void centerHeap<T>::consolidate()
     }
     min = NULL;
 
-    // 将cons中的结点重新加到根表中
+    // add the nodes in cons back to the root table
     for (i=0; i<D; i++)
     {
         if (cons[i] != NULL)
@@ -258,7 +252,7 @@ void centerHeap<T>::consolidate()
 }
 
 /*
- * 移除最小节点
+ Remove the minimum node
  */
 template <class T>
 void centerHeap<T>::removeMin()
@@ -268,7 +262,7 @@ void centerHeap<T>::removeMin()
 
     centerNode<T> *child = NULL;
     centerNode<T> *m = min;
-    // 将min每一个儿子(儿子和儿子的兄弟)都添加到"斐波那契堆的根链表"中
+    // Add each of Min's sons (son and son's brother) to the Fibonacci Heap root list
     while (m->child != NULL)
     {
         child = m->child;
@@ -282,10 +276,11 @@ void centerHeap<T>::removeMin()
         child->parent = NULL;
     }
 
-    // 将m从根链表中移除
+    // Remove m from the root list
+   // Remove m from the root list 
     removeNode(m);
-    // 若m是堆中唯一节点，则设置堆的最小节点为NULL；
-    // 否则，设置堆的最小节点为一个非空节点(m->right)，然后再进行调节。
+    // If m is the only node in the heap, set the minimum node of the heap to NULL;
+// Otherwise, set the minimum node of the heap to a non-empty node (m- >;Right), and then adjust.
     if (m->right == m)
         min = NULL;
     else
@@ -297,7 +292,7 @@ void centerHeap<T>::removeMin()
 }
 
 /*
- * 获取斐波那契堆中最小键值，并保存到pkey中；成功返回true，否则返回false。
+ Get the minimum key value in the Fibonacci heap and save it in pkey;Returns true on success, false otherwise.
  */
 template <class T>
 bool centerHeap<T>::minimum(T *pkey)
@@ -309,9 +304,7 @@ bool centerHeap<T>::minimum(T *pkey)
     return true;
 }
 
-/*
- * 修改度数
- */
+
 template <class T>
 void centerHeap<T>::renewDegree(centerNode<T> *parent, int degree)
 {
@@ -321,15 +314,15 @@ void centerHeap<T>::renewDegree(centerNode<T> *parent, int degree)
 }
 
 /*
- * 将node从父节点parent的子链接中剥离出来，
- * 并使node成为"堆的根链表"中的一员。
+* Remove node from child link of parent node,
+* And make node a member of the root list of the heap.
  */
 template <class T>
 void centerHeap<T>::cut(centerNode<T> *node, centerNode<T> *parent)
 {
     removeNode(node);
     renewDegree(parent, node->degree);
-    // node没有兄弟
+    
     if (node == node->right)
         parent->child = NULL;
     else
@@ -338,18 +331,18 @@ void centerHeap<T>::cut(centerNode<T> *node, centerNode<T> *parent)
     node->parent = NULL;
     node->left = node->right = node;
     node->marked = false;
-    // 将"node所在树"添加到"根链表"中
+    
     addNode(node, min);
 }
 
 /*
- * 对节点node进行"级联剪切"
- *
- * 级联剪切：如果减小后的结点破坏了最小堆性质，
- *     则把它切下来(即从所在双向链表中删除，并将
- *     其插入到由最小树根节点形成的双向链表中)，
- *     然后再从"被切节点的父节点"到所在树根节点递归执行级联剪枝
- */
+* Perform "cascading clipping" on nodes
+*
+* Cascading shear: If the reduced node breaks the minimum heap property,
+* then cut it off (that is, delete it from the bidirectional list it is in, and change it to
+* it inserts into the bidirectional linked list formed by the smallest root node),
+* Then perform cascading pruning recursively from "the parent of the node being cut" to the root node
+*/
 template <class T>
 void centerHeap<T>::cascadingCut(centerNode<T> *node)
 {
@@ -388,19 +381,19 @@ void centerHeap<T>::decrease(centerNode<T> *node, T key)
     parent = node->parent;
     if (parent!=NULL && node->key < parent->key)
     {
-        // 将node从父节点parent中剥离出来，并将node添加到根链表中
+        // Remove node from parent and add node to the root list
         cut(node, parent);
         cascadingCut(parent);
     }
 
-    // 更新最小节点
+    // Update the minimum node
     if (node->key < min->key)
         min = node;
 }
 
 /*
- * 将斐波那契堆中节点node的值增加为key
- */
+* Increase the Fibonacci heap node value to key
+*/
 template <class T>
 void centerHeap<T>::increase(centerNode<T> *node, T key)
 {
@@ -416,27 +409,27 @@ void centerHeap<T>::increase(centerNode<T> *node, T key)
         return ;
     }
 
-    // 将node每一个儿子(不包括孙子,重孙,...)都添加到"斐波那契堆的根链表"中
+    // Will node every son (excluding grandchildren, great-grandchildren...)All added to the Fibonacci Heap root list
     while (node->child != NULL)
     {
         child = node->child;
-        removeNode(child);               // 将child从node的子链表中删除
+        removeNode(child);               
         if (child->right == child)
             node->child = NULL;
         else
             node->child = child->right;
 
-        addNode(child, min);       // 将child添加到根链表中
+        addNode(child, min);       
         child->parent = NULL;
     }
     node->degree = 0;
     node->key = key;
 
-    // 如果node不在根链表中，
-    //     则将node从父节点parent的子链接中剥离出来，
-    //     并使node成为"堆的根链表"中的一员，
-    //     然后进行"级联剪切"
-    // 否则，则判断是否需要更新堆的最小节点
+    // If node is not in the root list,
+// Remove node from child link of parent node.
+// And make node a member of the root list of the heap,
+// Then perform "cascading clipping"
+// Otherwise, determine whether the smallest node of the heap needs to be updated
     parent = node->parent;
     if(parent != NULL)
     {
@@ -456,8 +449,8 @@ void centerHeap<T>::increase(centerNode<T> *node, T key)
 }
 
 /*
- * 更新斐波那契堆的节点node的键值为key
- */
+* Update Fibonacci heap node with key
+*/
 template <class T>
 void centerHeap<T>::update(centerNode<T> *node, T key)
 {
@@ -480,13 +473,13 @@ void centerHeap<T>::update(T oldkey, T newkey)
 }
 
 /*
- * 在最小堆root中查找键值为key的节点
- */
+* Find the node with the key value in the minimum heap root
+*/
 template <class T>
 centerNode<T>* centerHeap<T>::search(centerNode<T> *root, T key)
 {
-    centerNode<T> *t = root;    // 临时节点
-    centerNode<T> *p = NULL;    // 要查找的节点
+    centerNode<T> *t = root;    
+    centerNode<T> *p = NULL;    
 
     if (root==NULL)
         return root;
@@ -510,8 +503,8 @@ centerNode<T>* centerHeap<T>::search(centerNode<T> *root, T key)
 }
 
 /*
- * 在斐波那契堆中查找键值为key的节点
- */
+* Find the key node in the Fibonacci heap
+*/
 template <class T>
 centerNode<T>* centerHeap<T>::search(T key)
 {
@@ -523,8 +516,8 @@ centerNode<T>* centerHeap<T>::search(T key)
 template <class T>
 centerNode<T>* centerHeap<T>::search_id(centerNode<T> *root, int id)
 {
-    centerNode<T> *t = root;    // 临时节点
-    centerNode<T> *p = NULL;    // 要查找的节点
+    centerNode<T> *t = root;    // temporary node
+    centerNode<T> *p = NULL;    // node to search
 
     if (root==NULL)
         return root;
@@ -549,7 +542,7 @@ centerNode<T>* centerHeap<T>::search_id(centerNode<T> *root, int id)
 template <class T>
 void centerHeap<T>::pop_patient_wrtddl(centerNode<T> *root, int ddl) //返回指向当天有ddl的病人的指针
 {
-    centerNode<T> *t = root;    // 临时节点
+    centerNode<T> *t = root;    // temporary node
    
 
     if (root==NULL)
@@ -583,18 +576,16 @@ void centerHeap<T>::pop_patient_wrtddl(centerNode<T> *root, int ddl) //返回指
     
 }
 /*
- * 在斐波那契堆中是否存在键值为key的节点。
- * 存在返回true，否则返回false。
- */
+* Whether there are key nodes in the Fibonacci heap.
+* Returns true if it exists, false otherwise.
+*/
 template <class T>
 bool centerHeap<T>::contains(T key)
 {
     return search(key)!=NULL ? true: false;
 }
 
-/*
- * 删除结点node
- */
+
 template <class T>
 void centerHeap<T>::remove(centerNode<T> *node)
 {
@@ -618,9 +609,7 @@ void centerHeap<T>::remove(T key)
     remove(node);
 }
 
-/*
- * 销毁斐波那契堆
- */
+
 template <class T>
 void centerHeap<T>::destroyNode(centerNode<T> *node)
 {
@@ -631,7 +620,7 @@ void centerHeap<T>::destroyNode(centerNode<T> *node)
 
     do {
         destroyNode(node->child);
-        // 销毁node，并将node指向下一个
+        // Destroy the node and point it to the next one
         node = node->right;
         delete node->left;
     } while(node != start);
@@ -645,14 +634,14 @@ void centerHeap<T>::destroy()
 }
 
 /*
- * 打印"斐波那契堆"
- *
- * 参数说明：
- *     node       -- 当前节点
- *     prev       -- 当前节点的前一个节点(父节点or兄弟节点)
- *     direction  --  1，表示当前节点是一个左孩子;
- *                    2，表示当前节点是一个兄弟节点。
- */
+* Print "Fibonacci heap"
+*
+* Parameter description:
+* node -- the current node
+* prev -- the previous node of the current node (parent or sibling)
+* direction -- 1, indicating that the current node is a left child;
+* 2: indicates that the current node is a sibling node.
+*/
 template <class T>
 void centerHeap<T>::print(centerNode<T> *node, centerNode<T> *prev, int direction)
 {
@@ -670,7 +659,7 @@ void centerHeap<T>::print(centerNode<T> *node, centerNode<T> *prev, int directio
         if (node->child != NULL)
             print(node->child, node, 1);
 
-        // 兄弟节点
+        // brother node
         prev = node;
         node = node->right;
         direction = 2;
@@ -678,7 +667,7 @@ void centerHeap<T>::print(centerNode<T> *node, centerNode<T> *prev, int directio
 }
 
 template <class T>
-void centerHeap<T>::print()
+void centerHeap<T>::print() // print the exact node in the fibonacci heap
 {
     int i=0;
     centerNode<T> *p;
