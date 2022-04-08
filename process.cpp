@@ -20,7 +20,8 @@ template<class T> void  centerHeap<T>::appointment_process(int date )
 {   extern int capacity_total;
     extern int content_total;
     pop_patient_wrtddl(min,date+10);  // 在ddl之前一天就要进行治疗,因此前第二天需要预约
-    for (int i = 0; i < capacity_total-content_total;i++){ //防止超出当日所有医院加起来的每日总容量
+   
+    for (int i = 0; i < capacity_total-content_total && min != NULL;i++){ //防止超出当日所有医院加起来的每日总容量
         min->treated_time = date + 5;
         min->treated_location = check_nearest(min);
         total_appointment_num++;
@@ -33,7 +34,7 @@ template<class T> void  centerHeap<T>::appointment_process(int date )
             last_appointment->child = min;
             removeMin();
             last_appointment->child->parent = last_appointment;
-            last_appointment = min;
+            last_appointment = last_appointment->child;
             last_appointment->child = NULL;
             total_appointment_num++;
         }

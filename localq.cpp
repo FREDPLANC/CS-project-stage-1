@@ -160,7 +160,7 @@ template<class T> localQueue<T>::localQueue(int size)
     else
         minsize = 20;
     numitems = 0;
-    first = 0;
+    first = 1;
     last = 0;
     reprarray = new T[maxsize];
 }
@@ -228,6 +228,7 @@ template<class T> patient localQueue<T>::De_queue(void){ // let a element go out
     if(((numitems -1) <= maxsize * 0.25) && (2*minsize < maxsize)){
         deallocate();
     }
+    cout << (reprarray[first])->id << endl;
     patient ele_out = *(reprarray[first]);  // the element to be out;
 	first += 1;
 	first = first % maxsize;
@@ -253,7 +254,7 @@ template<class T> void localQueue<T>::allocate(void)
     T *newarray = new T[newsize];
     for (int i = 0; i < numitems; ++i)
         newarray[i] = reprarray[(i + first) % maxsize];
-    first = 0;
+    first = 1;
     last = numitems -1;
     delete[] reprarray;
     reprarray = newarray;
@@ -270,7 +271,7 @@ template<class T> void localQueue<T>::deallocate(void)
     {
         newarray[i] = reprarray[(i + first) % maxsize];
     }
-    first = 0;
+    first = 1;
     last = numitems -1;
     delete[] reprarray;
     reprarray = newarray;

@@ -31,8 +31,8 @@ void half_day_process(){
     daily_hosp_setZero();
     extern int date_treat;
     date_treat = month*1000 + day*10 + am;
-    center.treatment_process(date_treat);
     center.build(); // insert the csv daily data;
+    center.treatment_process(date_treat);
     center.appointment_process(date_treat);
 }
 
