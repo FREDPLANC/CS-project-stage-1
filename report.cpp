@@ -150,15 +150,15 @@ template<class T> void centerHeap<T>:: week_report()
     Listsort_aging(last_waiting);
 
     /*按照职业排序
-    Listsort_prof(&last_appointment);
-    Listsort_prof(&last_treatment);
-    Listsort_prof(&last_waiting);
+    Listsort_prof(last_appointment);
+    Listsort_prof(last_treatment);
+    Listsort_prof(last_waiting);
     */
 
     /*按照名字排序
-    Listsort_name(&last_appointment);
-    Listsort_name(&last_treatment);
-    Listsort_name(&last_waiting);
+    Listsort_name(last_appointment);
+    Listsort_name(last_treatment);
+    Listsort_name(last_waiting);
     */
 
     report_appointment();
