@@ -108,7 +108,7 @@ int main()
     for(int i = 0; i < 3;i++){
         hospital* hop = new hospital();
         hop->hosp_id = i;
-        hop->capacity = 10+i;
+        hop->capacity = 1+i;
         hop->content = 0;
         hop->loc = 2+i;
         H[i] = hop;

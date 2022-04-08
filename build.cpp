@@ -19,27 +19,32 @@ void centerHeap<T>::build(){ //将本地的队列加入到中央的堆内部
     localQueue<patient*> Q2 = build_queue(2);
     localQueue<patient*> Q3 = build_queue(3);
     int k=0;
-    for (int i=1;i<=Q1.getlength();i++)
+    int l1 = Q1.getlength();
+    int l2 = Q2.getlength();
+    int l3 = Q3.getlength();
+    for (int i=1;i<=l1;i++)
     {
-        
-        add_patient(Q1); //first pop the content of the queue one by one
+        patient p1=Q1.De_queue() ;
+        add_patient(p1); //first pop the content of the queue one by one
         
 
     }
-    for (int i=1;i<=Q2.getlength();i++)
-    {
-        add_patient(Q2);
+    for (int i=1;i<=l2;i++)
+    {   
+        patient p2=Q2.De_queue() ;
+        add_patient(p2);
     }
-    for (int i=1;i<=Q3.getlength();i++)
+    for (int i=1;i<=l3;i++)
     {
-        add_patient(Q3);
+        patient p3=Q3.De_queue() ;
+        add_patient(p3);
     }
 
 }
 template <class T>
-void centerHeap<T>::add_patient(localQueue<patient*> Q) //将本地队列的元素弹出并构建成centerHeap
+void centerHeap<T>::add_patient(patient p) //将本地队列的元素弹出并构建成centerHeap
 {
-    patient p=Q.De_queue() ;
+    
     if (p.status==54188)
     {
         withdraw(p.id);

@@ -20,11 +20,11 @@ template<class T> void  centerHeap<T>::appointment_process(int date )
 {   extern int capacity_total;
     extern int content_total;
     pop_patient_wrtddl(min,date+10);  // 在ddl之前一天就要进行治疗,因此前第二天需要预约
-   
-    for (int i = 0; i < capacity_total-content_total && min != NULL;i++){ //防止超出当日所有医院加起来的每日总容量
+   int rest_capacity = capacity_total - content_total;
+    for (int i = 0; i < rest_capacity && min != NULL;i++){ //防止超出当日所有医院加起来的每日总容量
         min->treated_time = date + 5;
         min->treated_location = check_nearest(min);
-        total_appointment_num++;
+        //total_appointment_num++;
         if(last_appointment == NULL) {
             last_appointment = min;
             removeMin();
@@ -39,13 +39,14 @@ template<class T> void  centerHeap<T>::appointment_process(int date )
             total_appointment_num++;
         }
     }
+    cout<< "abcdfuckyou" << total_appointment_num << endl;
     return;
 }
 template<class T> void centerHeap<T>::treatment_process(int date)  // 处理治疗, 把前天的预约名单里的病人全部倒入治疗名单,预约名单清零
 {  
     centerNode<T> *temp;
     
-    if(last_treatment = NULL){
+    if(last_treatment == NULL){
         last_treatment = last_appointment;
         last_appointment = NULL;
     }else{

@@ -10,14 +10,19 @@
 using namespace std;
 
 //report出来treated的人
-template<class T> void centerHeap<T>:: report_treated()
+template<class T> void centerHeap<T>:: report_treated(centerNode<T>* head_treatment)
 {
     ofstream fout("treated.txt");
+    if (head_treatment->parent == NULL)
+    {
+        fout.close();
+        return;
+    }
     centerNode<T> *tmp = head_treatment->parent;
     while (tmp != NULL)
     {
 
-        fout<<tmp->prof<<","<<tmp->aging<<","<<tmp->risk<<","<<tmp->treated_time-tmp->time<<endl;
+        fout<<tmp->id<<","<<tmp->name<<","<<tmp->prof<<","<<tmp->birth<<","<<tmp->risk<<","<<tmp->treated_time-tmp->time<<endl;
         tmp = tmp->parent;
     }
     fout.close();
@@ -26,25 +31,35 @@ template<class T> void centerHeap<T>:: report_treated()
 
 
 //report出来registered的人
-template<class T> void centerHeap<T>:: report_appointment()
+template<class T> void centerHeap<T>:: report_appointment(centerNode<T>* head_appointment)
 {
     ofstream fout("appointment.txt");
+    if (head_appointment->parent == NULL)
+    {
+        fout.close();
+        return;
+    }
     centerNode<T> *tmp = head_appointment->parent;
     while (tmp != NULL)
     {
-        fout<<tmp->prof<<","<<tmp->aging<<","<<tmp->risk<<","<<tmp->time<<endl;
+        fout<<tmp->id<<","<<tmp->name<<","<<tmp->prof<<","<<tmp->birth<<","<<tmp->risk<<","<<tmp->time<<endl;
         tmp = tmp -> parent;
     }
     fout.close();
 }
 
-template<class T> void centerHeap<T>:: report_registered()
+template<class T> void centerHeap<T>:: report_registered(centerNode<T>* head_waiting)
 {
     ofstream fout("registered.txt");
-    centerNode<T> *tmp = head_registered->parent;
+    if (head_waiting->parent == NULL || min == NULL)
+    {
+        fout.close();
+        return;
+    }
+    centerNode<T> *tmp = head_waiting->parent;
     while (tmp != NULL)
     {   extern int date_treat;
-        fout<<tmp->prof<<","<<tmp->aging<<","<<tmp->risk<<","<<date_treat-tmp->time<<endl;
+        fout<<tmp->id<<","<<tmp->name<<","<<tmp->prof<<","<<tmp->birth<<","<<tmp->risk<<","<<date_treat-tmp->time<<endl;
         tmp = tmp -> parent;
     }
     fout.close();
@@ -143,27 +158,30 @@ template<class T> void centerHeap<T>:: month_report()
 template<class T> void centerHeap<T>:: week_report()
 {
     List_registered();
-    set_head();
+    centerNode<T> *head_appointment = new centerNode<T>(last_treatment);
+    centerNode<T> *head_treatment = new centerNode<T>(last_treatment);
+    centerNode<T> *head_waiting = new centerNode<T>(last_treatment);
+    set_head(head_appointment,head_treatment,head_waiting);
     /*按照年龄排序*/
     Listsort_aging(last_appointment);
     Listsort_aging(last_treatment);
     Listsort_aging(last_waiting);
 
     /*按照职业排序
-    Listsort_prof(&last_appointment);
-    Listsort_prof(&last_treatment);
-    Listsort_prof(&last_waiting);
+    Listsort_prof(last_appointment);
+    Listsort_prof(last_treatment);
+    Listsort_prof(last_waiting);
     */
 
     /*按照名字排序
-    Listsort_name(&last_appointment);
-    Listsort_name(&last_treatment);
-    Listsort_name(&last_waiting);
+    Listsort_name(last_appointment);
+    Listsort_name(last_treatment);
+    Listsort_name(last_waiting);
     */
 
-    report_appointment();
-    report_treated();
-    report_registered();
+    report_appointment(head_appointment);
+    report_treated(head_treatment);
+    report_registered(head_waiting);
 }
 
 
@@ -172,7 +190,7 @@ template<class T> int centerHeap<T>:: count_list(centerNode<T> *head)
 {
     int counter = 0;
     centerNode<T> *tmp = head;
-    while (tmp != NULL)
+    while (tmp != NULL && tmp->parent != NULL)
     {
         counter++;
         tmp = tmp->parent;
@@ -181,11 +199,12 @@ template<class T> int centerHeap<T>:: count_list(centerNode<T> *head)
 }
 
 /*为list添加头节点*/
-template<class T> void centerHeap<T>:: set_head()
+template<class T> void centerHeap<T>:: set_head(centerNode<T>* head_appointment,centerNode<T>* head_treatment,centerNode<T>* head_waiting)
 {
-    centerNode<T> *head_appointment;
-    centerNode<T> *head_treatment;
-    centerNode<T> *head_waiting;
+    /*centerNode<T> *head_appointment = new centerNode<T>(last_treatment);
+    centerNode<T> *head_treatment = new centerNode<T>(last_treatment);
+    centerNode<T> *head_waiting = new centerNode<T>(last_treatment);
+    */
     add_head(last_appointment,head_appointment);
     add_head(last_treatment,head_treatment);
     add_head(last_waiting,head_waiting);
@@ -193,8 +212,16 @@ template<class T> void centerHeap<T>:: set_head()
 }
 template<class T> void centerHeap<T>:: add_head(centerNode<T> *N,centerNode<T> *H)
 {
-    N->child = H;
-    H->parent = N;
+    if (N == NULL)
+    {
+        H = NULL;
+    }
+    else
+    {
+        N->child = H;
+        H->parent = N;
+    }
+   
 }
 
 
@@ -211,10 +238,15 @@ template<class T> void centerHeap<T>:: Listsort_prof(centerNode<T>*   head)
     centerNode<T> * p;
     centerNode<T> * p1;
     //如果链表为空直接返回
+    if (head==NULL)
+    {
+        return;
+    }
+    
     for (i = 0; i < number - 1; i++) 
     {
         L = head->parent;
-        for (j = 0; j < number - i - 1; j++) 
+        for (j = 0; j < number - i - 2; j++) 
         {
             //得到两个值
             p = L;
@@ -223,12 +255,24 @@ template<class T> void centerHeap<T>:: Listsort_prof(centerNode<T>*   head)
             if (p->prof > p1->prof) 
             {
                 centerNode<T>* temp = p;
-                p1->parent->child = p;
-                p->child->parent = p1;
-                p1->child = p->child;
-                p->parent = p1->parent;
-                p1->parent = p;
-                p->child = p1;
+                if (p1->parent != NULL)
+                {
+                    p1->parent->child = p;
+                    p->child->parent = p1;
+                    p1->child = p->child;
+                    p->parent = p1->parent;
+                    p1->parent = p;
+                    p->child = p1;
+                }
+                else
+                {
+                    p->child->parnet = p1;
+                    p1->child = p->child;
+                    p->child = p1;
+                    p->parent = NULL;
+                    p1->parent = p;
+
+                }
             }
             else
             {
@@ -247,29 +291,48 @@ template<class T> void centerHeap<T>:: Listsort_aging(centerNode<T>*  head)
     int i = 0;
     int j = 0;
     //用于变量链表
+    
     centerNode<T> * L = head;
     //作为一个临时量
     centerNode<T> * p;
     centerNode<T> * p1;
     //如果链表为空直接返回
-    for (i = 0; i < number - 1; i++) 
+    if (head==NULL)
+    {
+        return;
+    }
+    
+    for (i = 0; i < number + 1 ; i++) 
     {
         L = head->parent;
-        for (j = 0; j < number - i - 1; j++) 
+        for (j = 0; j < number - i - 2; j++) 
         {
             //得到两个值
             p = L;
             p1 = L->parent;
             //如果前面的那个比后面的那个大，就交换它们之间的是数据域
-            if (p->aging > p1->aging) 
+            if (p->birth > p1->birth) 
             {
                 centerNode<T> * temp = p;
-                p1->parent->child = p;
-                p->child->parent = p1;
-                p1->child = p->child;
-                p->parent = p1->parent;
-                p1->parent = p;
-                p->child = p1;
+                if (p1->parent != NULL)
+                {
+                    p1->parent->child = p;
+                    p->child->parent = p1;
+                    p1->child = p->child;
+                    p->parent = p1->parent;
+                    p1->parent = p;
+                    p->child = p1;
+                }
+                else
+                {
+                    p->child->parent = p1;
+                    p1->child = p->child;
+                    p->child = p1;
+                    p->parent = NULL;
+                    p1->parent = p;
+
+                }
+                
             }
             else
             {
@@ -292,10 +355,14 @@ template<class T> void centerHeap<T>:: Listsort_name(centerNode<T>*   head)
     centerNode<T> * p;
     centerNode<T> * p1;
     //如果链表为空直接返回
+    if (head==NULL)
+    {
+        return;
+    }
     for (i = 0; i < number - 1; i++) 
     {
         L = head->parent;
-        for (j = 0; j < number - i - 1; j++) 
+        for (j = 0; j < number - i - 2; j++) 
         {
             //得到两个值
             p = L;
@@ -303,13 +370,25 @@ template<class T> void centerHeap<T>:: Listsort_name(centerNode<T>*   head)
             //如果前面的那个比后面的那个大，就交换它们之间的是数据域
             if ((p->name).compare(p1->name) == 1) 
             {
-                centerNode<T> *temp = p;
-                p1->parent->child = p;
-                p->child->parent = p1;
-                p1->child = p->child;
-                p->parent = p1->parent;
-                p1->parent = p;
-                p->child = p1;
+                centerNode<T> * temp = p;
+                if (p1->parent != NULL)
+                {
+                    p1->parent->child = p;
+                    p->child->parent = p1;
+                    p1->child = p->child;
+                    p->parent = p1->parent;
+                    p1->parent = p;
+                    p->child = p1;
+                }
+                else
+                {
+                    p->child->parnet = p1;
+                    p1->child = p->child;
+                    p->child = p1;
+                    p->parent = NULL;
+                    p1->parent = p;
+
+                }
             }
             else
             {
@@ -323,38 +402,23 @@ template<class T> void centerHeap<T>:: Listsort_name(centerNode<T>*   head)
 //queueing的人形成一个list
 template<class T> void centerHeap<T>:: List_registered()
 {
-    centerNode<T> *tmp = min;
-    centerNode<T> *tmp_line = min;
-    centerNode<T> *tmp_line1 = tmp_line;
-    extern int date_treat;
-    listmake(tmp);
-    if (tmp_line->child != NULL)                /*print第一个根节点*/
+    if (min == NULL)
     {
-        tmp_line = tmp->child;
-        while (tmp_line != NULL)
-        {                                                       
-        
-            tmp_line1 = tmp_line;
-            listmake(tmp_line);
-            while (tmp_line1->left != tmp_line)
-            {
-                tmp_line1 = tmp_line1->left;
-                listmake(tmp_line1);
-            }
-            
-            tmp_line = tmp_line->child;   
-        }
+        last_waiting = NULL;
     }
-    tmp = tmp->left;
-    /*************************************************************************************/
-    while (tmp != min)         /*print之后的根节点*/
-    {   
-        listmake(tmp);
-        if (tmp_line->child != NULL)
+    else
+    {
+        centerNode<T> *tmp = min;
+        centerNode<T> *tmp_line = min;
+        centerNode<T> *tmp_line1 = tmp_line;
+        extern int date_treat;
+        last_waiting = new centerNode<T>(min);
+        if (tmp_line->child != NULL)                /*print第一个根节点*/
         {
+            listmake(tmp);
             tmp_line = tmp->child;
             while (tmp_line != NULL)
-            {
+            {                                                       
             
                 tmp_line1 = tmp_line;
                 listmake(tmp_line);
@@ -364,29 +428,54 @@ template<class T> void centerHeap<T>:: List_registered()
                     listmake(tmp_line1);
                 }
                 
-                tmp_line = tmp_line->child;    
+                tmp_line = tmp_line->child;   
             }
         }
         tmp = tmp->left;
+        tmp_line = tmp;
+        /*************************************************************************************/
+        while (tmp != min)         /*print之后的根节点*/
+        {   
+            listmake(tmp);
+            if (tmp->child != NULL)
+            {
+                tmp_line = tmp->child;
+                while (tmp_line != NULL)
+                {
+                
+                    tmp_line1 = tmp_line;
+                    listmake(tmp_line);
+                    while (tmp_line1->left != tmp_line)
+                    {
+                        tmp_line1 = tmp_line1->left;
+                        listmake(tmp_line1);
+                    }
+                    
+                    tmp_line = tmp_line->child;    
+                }
+            }
+            tmp = tmp->left;
+        }
     }
+    
     
 }
 
 template <class T>
 void centerHeap<T>::listmake(centerNode<T>* N)
 {
-    centerNode<T>* node;
-    node=copy(N);
+    centerNode<T>* node = new centerNode<T>(N);
+    //node=copy(N);
     last_waiting->child=node;
     node->parent=last_waiting;
     last_waiting=node;
 
 
 }
-template <class T>
+/*template <class T>
 centerNode<T>* centerHeap<T>::copy(centerNode<T>* N)
 {
-    centerNode<T>* node;
+    centerNode<T>* node = new centerNode<T>() ;
     node->key=N->key;
     node->degree=N->degree;
     node->id=N->id;
@@ -408,5 +497,5 @@ centerNode<T>* centerHeap<T>::copy(centerNode<T>* N)
     node->status =  N->status;
     
     return node;
-}
+}*/
 #endif

@@ -1,19 +1,23 @@
 #ifndef _localq_
 #define _localq_
-
 #include <cstdio>
 #include "stdlib.h"
 #include <fstream>
 #include <iostream>
+#include <vector>
+#include<string>
 #include "localq.h"
 #include "centerheap.h"
-using namespace std;
 
+#include <sstream>
+
+using namespace std;
 
 void daily_hosp_setZero(void){
     for(int i = 0; i < 3;i++){
         H[i]->content = 0;
     }
+    content_total = 0;
     return;
 }
 
@@ -48,7 +52,6 @@ int centerHeap<T>::check_nearest(centerNode<T> *node)
 }
 
 
-
 localQueue<patient*>  build_queue (int i){
     localQueue<patient*> palist;
     char filename[256];
@@ -56,7 +59,10 @@ localQueue<patient*>  build_queue (int i){
     cin>>filename;
     int omitline = 0; // the line to be neglected
     ifstream infile(filename);
+    
+
     while(infile.good()){
+        
         //.csv文件用","作为分隔符
         if(omitline == 0){
             char omitting[256];
@@ -70,6 +76,85 @@ localQueue<patient*>  build_queue (int i){
         extern int month;
         extern int day;
         extern int am;
+        string line;
+        while (getline(infile, line)){
+            //打印整行字符串
+            cout << "each line : " << line << endl;
+            patient* pat = new patient();
+            //解析每行的数据
+            stringstream ss(line);
+            string _sub;
+            vector<string> subArray;
+    
+            //按照逗号分隔
+            while (getline(ss, _sub, ','))
+                subArray.push_back(_sub);
+            
+    
+            //输出解析后的每行数据
+            for (size_t i=0; i<subArray.size(); ++i)
+            {
+                
+                switch (i+1) {  // You can refer to the order in the sample csv.
+					case 1:
+                        pat->id = atoi(subArray[i].c_str());
+                        cout << pat->id<<endl;
+						break;
+					case 2:
+                        subArray[i].copy(pat->name, subArray[i].length(), 0);
+                        *(pat->name+subArray[i].length())='\0';
+                        cout << pat->name<<endl;
+						break;
+					case 3:
+                        pat->prof = atoi(subArray[i].c_str());
+                        cout << pat->prof<<endl;
+						break;
+					case 4:
+						pat->time=atoi(subArray[i].c_str());
+                        pat->time=month*1000+day*10+am;
+                        cout << pat->time<<endl;
+						break; 
+                    case 5:
+                        pat->risk=atoi(subArray[i].c_str());
+                        
+                        cout << pat->risk<<endl;
+                        break;
+                    case 6:
+                        subArray[i].copy(pat->contact, subArray[i].length(), 0);
+                        *(pat->contact+subArray[i].length())='\0';
+                        cout << pat->contact<<endl;
+                        break;
+                    case 7:
+                        pat->treat_ddl=10*atoi(subArray[i].c_str());
+                        
+                        cout << pat->treat_ddl<<endl;
+                        break;
+                    case 8:
+                        pat->loc=atoi(subArray[i].c_str());
+                        
+                        cout << pat->loc<<endl;
+						break;
+                    case 9:
+                        pat->birth=atoi(subArray[i].c_str());
+                        
+                        cout << pat->birth<<endl;
+                        (*pat).age_rank();
+                        break;
+                    case 10:
+                        pat->status=atoi(subArray[i].c_str());
+                        
+                        cout << pat->status<<endl;
+                        item = -2;
+                        break;
+                        
+                         
+            }
+
+            }
+            palist.En_queue(pat);
+            cout << endl;
+        }
+        /*
         patient* pat = new patient();
         while(item >= 0){
             char buffer[128]; // the size of each item;
@@ -81,7 +166,7 @@ localQueue<patient*>  build_queue (int i){
             
             switch (item) {  // You can refer to the order in the sample csv.
 					case 1:
-						/*ill->id=(int)strtol(buf,NULL,10);*/
+						
 						if (buffer[0]=='\0') {
 							delete pat;
 							pat = nullptr; 
@@ -140,16 +225,17 @@ localQueue<patient*>  build_queue (int i){
             if(item == -2){
                 N[len_N++]=pat; 
                 
-                palist.En_queue(pat);  // This pointer to this patient is stored to the vector palist.  
+                palist.En_queue(pat);  
                  
             }
 
-        }   
+        } 
+        */  
     }
+    
     infile.close();
 	return palist;
 }
-
 template<class T> localQueue<T>::localQueue(int size)
 {
     maxsize = size;

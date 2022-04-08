@@ -35,7 +35,36 @@ template<class T> class centerNode
 	int loc;
     
 	/* Class Functions */
-	centerNode();
+	centerNode(){
+        
+    };
+    centerNode(centerNode<T>* N){
+    
+    left   = this;
+    right  = this;
+    parent = NULL;
+    child  = NULL;
+    key=N->key;
+    degree=N->degree;
+    id=N->id;
+    
+    prof=N->prof;
+    birth=N->birth;
+    risk=N->risk;
+    time=N->time;
+    treated_time=N->treated_time;
+    treated_location=N->treated_location;
+    aging=N->aging;
+    
+    treat_ddl=N->treat_ddl;
+    near_hospital=N->near_hospital;
+    loc=N->loc;
+    strcpy(name,N->name);
+    strcpy(contact,N->contact);
+    strcpy(address,N->address);
+    status =  N->status;
+    
+    }
 	  //~patient();
 	void age_rank(); // judge which age group he is in
 
@@ -110,11 +139,11 @@ template<class T> class centerHeap
         void withdraw(int id);
         int check_nearest(centerNode<T> *node);
         void build(); //读取医院普通队列
-        void add_patient(localQueue<patient*> Q);
+        void add_patient(patient p);
         void insert(patient p);
-        void report_treated();
-        void report_appointment();
-        void report_registered();
+        void report_treated(centerNode<T>* head_treatment);
+        void report_appointment(centerNode<T>* head_appointment);
+        void report_registered(centerNode<T>* head_waiting);
 
         void Listsort_prof(centerNode<T>* head);
         void Listsort_aging(centerNode<T>*  head);
@@ -122,7 +151,7 @@ template<class T> class centerHeap
         void List_registered();
         void listmake(centerNode<T> *N);
         centerNode<T> *copy(centerNode<T> *N);
-        void set_head();
+        void set_head(centerNode<T>* head_appointment,centerNode<T>* head_treatment,centerNode<T>* head_waiting);
         void add_head(centerNode<T> *N,centerNode<T> *H);
         int count_list(centerNode<T> *head);
         
