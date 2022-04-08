@@ -162,7 +162,7 @@ template<class T> class centerHeap
 
         void print();
         void iteregister(centerNode<T> *node, centerNode<T> *prev, int direction);
-
+        int go(int waiting,centerNode<T> *node, centerNode<T> *prev, int direction);
     private:
         
         void removeNode(centerNode<T> *node);  // 将node从双链表移除(不是完整的删除操作)

@@ -65,10 +65,35 @@ template<class T> void centerHeap<T>:: report_registered(centerNode<T>* head_wai
     fout.close();
 }
 
+template <class T>
+int centerHeap<T>::go(int waiting,centerNode<T> *node, centerNode<T> *prev, int direction)
+{
+    centerNode<T> *start=node;
+
+    if (node==NULL)
+        return waiting;
+    do
+    {
+        if (direction == 1)
+            waiting++;
+        else
+            waiting++;
+
+        if (node->child != NULL)
+           waiting = go(waiting,node->child, node, 1);
+
+        // 兄弟节点
+        prev = node;
+        node = node->right;
+        direction = 2;
+    } while(node != start);
+    return waiting;
+}
+
 /*每月播报*/
 template<class T> void centerHeap<T>:: month_report()
 {
-    ofstream fout("appointment.txt");
+    ofstream fout("month_report.txt");
     centerNode<T> *tmp_treatment = last_treatment;
     centerNode<T> *tmp_appointment = last_appointment;
     /*要求print的数据*/
@@ -98,31 +123,29 @@ template<class T> void centerHeap<T>:: month_report()
     }
     
     
-    
-    
     if (min == NULL)
     {
         last_waiting = NULL;
     }else{
         int i=0;
         centerNode<T> *p;
-        last_waiting = new centerNode<T>(min);
+        waiting++;
         if (min==NULL)
             return ;
 
-        listmake(min);
+        waiting++;
         p = min;
         do {
             i++;
             
 
-            iteregister(p->child, p, 1);
+            waiting = go(waiting, p->child, p, 1);
             p = p->right;
-            if(p != NULL && p != min) listmake(p);
+            if(p != NULL && p != min) waiting++;
         } while (p != min);
     }
    /*
-    centerNode<T> *tmp = min;
+    centerNode<T> *tmp = min;go(int waiting,centerNode<T> *node, centerNode<T> *prev, int direction)
     centerNode<T> *tmp_line = min;
     centerNode<T> *tmp_line1 = tmp_line;
     waiting++;
@@ -166,10 +189,13 @@ template<class T> void centerHeap<T>:: month_report()
             }
         }
         tmp = tmp->left;
-        */
+        
     }
+    */
+    
     registered = waiting + appointment + treatment;
     waiting_total = appointment + waiting;
+    
     fout<<"The number of people who have registered is "<<registered<<endl;
     fout<<"The number of people who are waiting is "<<waiting<<endl;
     fout<<"The number of people who are waiting in total is "<<waiting_total<<endl;
@@ -178,6 +204,10 @@ template<class T> void centerHeap<T>:: month_report()
     fout<<"The number of people who withdrew is "<<withdraw<<endl;
     fout.close();
 }
+
+
+
+
 
 /*每周播报*/
 template<class T> void centerHeap<T>:: week_report()
@@ -272,7 +302,7 @@ template<class T> void centerHeap<T>:: Listsort_prof(centerNode<T>*   head)
     for (i = 0; i < number - 1; i++) 
     {
         L = head->parent;
-        for (j = 0; j < number - i - 2; j++) 
+        for (j = 0; j < number - i - 1; j++) 
         {
             //得到两个值
             p = L;
@@ -330,8 +360,8 @@ template<class T> void centerHeap<T>:: Listsort_aging(centerNode<T>*  head)
     
     for (i = 0; i < number + 1 ; i++) 
     {
-        L = head->parent;
-        for (j = 0; j < number - i - 2; j++) 
+        L = head;
+        for (j = 0; j < number - i - 1; j++) 
         {
             //得到两个值
             p = L;
@@ -388,7 +418,7 @@ template<class T> void centerHeap<T>:: Listsort_name(centerNode<T>*   head)
     for (i = 0; i < number - 1; i++) 
     {
         L = head->parent;
-        for (j = 0; j < number - i - 2; j++) 
+        for (j = 0; j < number - i - 1; j++) 
         {
             //得到两个值
             p = L;
@@ -447,6 +477,9 @@ void centerHeap<T>::iteregister(centerNode<T> *node, centerNode<T> *prev, int di
         direction = 2;
     } while(node != start);
 }
+
+
+
 //queueing的人形成一个list
 template<class T> void centerHeap<T>:: List_registered()
 {
