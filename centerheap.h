@@ -10,13 +10,13 @@ using namespace std;
 template<class T> class centerNode  
 {
     public:
-    T key;    //键值
-    int degree;            // 度数
-    centerNode<T> *left;    // 左兄弟
-    centerNode<T> *right;    // 右兄弟
-    centerNode<T> *child;    // 第一个孩子节点
-    centerNode<T> *parent;    // 父节点
-    bool marked;        // 是否被删除第一个孩子
+    T key;    //key value
+    int degree;            // degree
+    centerNode<T> *left;    // left brother
+    centerNode<T> *right;    // right brother
+    centerNode<T> *child;    // the first child node
+    centerNode<T> *parent;    // father node
+    bool marked;        // whether to delete the first child
     int id;
 	char name[30];
 	char contact[11]; //number digit of 11
@@ -25,8 +25,8 @@ template<class T> class centerNode
 	int birth;  
 	int risk;  
 	int time;  // when he is register
-    int treated_time;  //被治好的时间
-    int treated_location;   //被治好的地点
+    int treated_time;  //the time to be treated
+    int treated_location;   //the place to be treated
 	int aging;   // the age group he is in
 	int status; // whether he is in waiting , appointed, or else
 		
@@ -109,37 +109,37 @@ template<class T> class centerHeap
 {     
       
     public:
-        int keyNum;         // 堆中当前节点的总数(不只是key的数量, key可能重复)
-        int total_appointment_num;       // 一共从开始到现在有多少病人被安排了appointment
-        int maxDegree;      // 最大度
-        int withdraw_list[1000]; //查询是否该id曾经撤销过预约或等待
-        int withdraw_number;     //记录已经撤销的人数
+        int keyNum;         // The total number of current nodes in the heap (not just the number of keys, which may be duplicated)
+        int total_appointment_num;       // How many appointments have been made since the beginning
+        int maxDegree;      // the biggest degree
+        int withdraw_list[1000]; // Check if this ID has ever cancelled a reservation or waited
+        int withdraw_number;     // Record the number of people that have been revoked
         int list_numb = 0;
-        centerNode<T> *min;    // 最小节点(某个最小堆的根节点)
-        centerNode<T> **cons;    // 最大度的内存区域
-        centerNode<T> *last_appointment; //储存每日预约名单的双链表, last_appointment指向今日最后一个预约的病人
-        centerNode<T> *last_treatment;   //储存总治疗名单的双链表
-        centerNode<T> *last_waiting;   //储存排队的人的双链表（斐波那契堆中的每个元素）
+        centerNode<T> *min;    // minimum node (the root node of a minimum heap)
+        centerNode<T> **cons;    // Maximum memory area
+        centerNode<T> *last_appointment; // Double linked list of daily appointments, last_appointment points to the last appointment of the day
+        centerNode<T> *last_treatment;  // Double linked list to store total treatment list
+        centerNode<T> *last_waiting;   // A double-linked list of queued people (each element in the Fibonacci heap)
         centerNode<T> *head_treatment;
         centerNode<T> *head_appointment;
         centerNode<T> *head_registered;
 
         centerHeap();  //*********************************************************************************************
         ~centerHeap();  //***********************************************************************************************
-        void insert(T key);   // 新建key对应的节点，并将其插入到斐波那契堆中
-        void removeMin();    // 移除斐波那契堆中的最小节点
-        void combine(centerHeap<T> *other);  // 将other合并到当前堆中
-        bool minimum(T *pkey);  // 获取斐波那契堆中最小键值，并保存到pkey中；成功返回true，否则返回false。
-        void update(T oldkey, T newkey);   // 将斐波那契堆中键值oldkey更新为newkey
-        void remove(T key);   // 删除键值为key的节点
-        void destroy();  // 销毁
+        void insert(T key);   // Create a new node for the key and insert it into the Fibonacci heap
+        void removeMin();    // Remove the smallest node in the Fibonacci heap
+        void combine(centerHeap<T> *other);  // Merge other into the current heap
+        bool minimum(T *pkey);  // Get the minimum key in the Fibonacci heap and save it in pkey;Returns true on success, false otherwise.
+        void update(T oldkey, T newkey);   // Update the Fibonacci heap oldkey to newkey
+        void remove(T key);   // Delete the node whose key is key
+        void destroy();  // destroy
         centerNode<T>* search_id(centerNode<T> *root, int id);
-        void appointment_process(int date );// 处理预约
-        void treatment_process(int date );  // 处理治疗
+        void appointment_process(int date );//process the appoint
+        void treatment_process(int date );  // process the treatment
         void pop_patient_wrtddl(centerNode<T> *root, int ddl);
         void withdraw(int id);
         int check_nearest(centerNode<T> *node);
-        void build(); //读取医院普通队列
+        void build(); // Read the hospital general queue
         void add_patient(patient p);
         void insert(patient p);
         void report_treated(centerNode<T>* head_treatment);
@@ -158,52 +158,52 @@ template<class T> class centerHeap
         
         void week_report();
         void month_report();
-        void print(centerNode<T> *node, centerNode<T> *prev, int direction);  // 打印"斐波那契堆"
+        void print(centerNode<T> *node, centerNode<T> *prev, int direction);  // Print "Fibonacci heap"
 
         void print();
         void iteregister(centerNode<T> *node, centerNode<T> *prev, int direction);
         int go(int waiting,centerNode<T> *node, centerNode<T> *prev, int direction);
     private:
         
-        void removeNode(centerNode<T> *node);  // 将node从双链表移除(不是完整的删除操作)
+        void removeNode(centerNode<T> *node);  // Remove node from the double-linked list (not a complete delete)
         
-        void addNode(centerNode<T> *node, centerNode<T> *root);  // 将node堆结点加入root结点之前(循环链表中)
+        void addNode(centerNode<T> *node, centerNode<T> *root);  // Add a node to the heap before adding it to the root node.
         
-        void catList(centerNode<T> *a, centerNode<T> *b);  // 将双向链表b链接到双向链表a的后面
+        void catList(centerNode<T> *a, centerNode<T> *b);  // Link bidirectional list B to the end of bidirectional list A
         
-        void insert(centerNode<T> *node);  // 将节点node插入到斐波那契堆中
+        void insert(centerNode<T> *node);  // Insert node into the Fibonacci heap
         
-        centerNode<T>* extractMin();  // 将"堆的最小结点"从根链表中移除，
+        centerNode<T>* extractMin();  // Insert node into the Fibonacci heap，
         
-        void link(centerNode<T>* node, centerNode<T>* root);  // 将node链接到root根结点
+        void link(centerNode<T>* node, centerNode<T>* root);  // Link node to root
         
-        void makeCons();  // 创建consolidate所需空间
+        void makeCons();  // Space required for consolidating
         
-        void consolidate();  // 合并斐波那契堆的根链表中左右相同度数的树
+        void consolidate();  // Merge the Fibonacci heap root list of trees with the same degree
         
-        void renewDegree(centerNode<T> *parent, int degree);  // 修改度数
+        void renewDegree(centerNode<T> *parent, int degree);  // change the degree
         
-        void cut(centerNode<T> *node, centerNode<T> *parent);  // 将node从父节点parent的子链接中剥离出来，并使node成为"堆的根链表"中的一员。
+        void cut(centerNode<T> *node, centerNode<T> *parent);  // Remove node from the child of parent and make node a member of the "root list of the heap".
         
-        void cascadingCut(centerNode<T> *node) ;  // 对节点node进行"级联剪切"
+        void cascadingCut(centerNode<T> *node) ;  // Perform "cascading clipping" on nodes.
         
-        void decrease(centerNode<T> *node, T key);  // 将斐波那契堆中节点node的值减少为key
+        void decrease(centerNode<T> *node, T key);  // Reduce the Fibonacci heap node value to key
         
-        void increase(centerNode<T> *node, T key);  // 将斐波那契堆中节点node的值增加为key
+        void increase(centerNode<T> *node, T key);  // Add the Fibonacci heap node to key
         
-        void update(centerNode<T> *node, T key);  // 更新斐波那契堆的节点node的键值为key
+        void update(centerNode<T> *node, T key);  // Update the Fibonacci heap node with key
         
-        centerNode<T>* search(centerNode<T> *root, T key);  // 在最小堆root中查找键值为key的节点
+        centerNode<T>* search(centerNode<T> *root, T key);  // Find the node with the key value in the minimum heap root
         
-        centerNode<T>* search(T key);  // 在斐波那契堆中查找键值为key的节点
+        centerNode<T>* search(T key);  // Find the key node in the Fibonacci heap
         
-        void remove(centerNode<T> *node);  // 删除结点node
+        void remove(centerNode<T> *node);  // Delete node
         
-        void destroyNode(centerNode<T> *node);  // 销毁斐波那契堆
+        void destroyNode(centerNode<T> *node);  // Destroy the Fibonacci heap
         
        
         
-        bool contains(T key); //在斐波那契堆中是否存在键值为key的节点。存在返回true，否则返回false。
+        bool contains(T key); // Whether there is a key node in Fibonacci heap.Returns true if it exists, false otherwise.
 
 
 };

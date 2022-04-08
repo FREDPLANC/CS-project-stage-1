@@ -38,7 +38,7 @@ template<class T> void  centerHeap<T>::appointment_process(int date )
             total_appointment_num++;
         }
     }
-    cout<< "abcdfuckyou" << total_appointment_num << endl;
+    
     return;
 }
 template<class T> void centerHeap<T>::treatment_process(int date)  // Deal with the treatment, add all the patients in the appointment list of the day before yesterday into the treatment list, and clear the appointment list
