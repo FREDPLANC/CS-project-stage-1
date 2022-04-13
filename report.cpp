@@ -9,7 +9,7 @@
 #include "centerheap.h"
 using namespace std;
 
-//report出来treated的人
+// Report the treated person
 template<class T> void centerHeap<T>:: report_treated(centerNode<T>* head_treatment)
 {
     ofstream fout("treated.txt");
@@ -30,7 +30,7 @@ template<class T> void centerHeap<T>:: report_treated(centerNode<T>* head_treatm
 
 
 
-//report出来registered的人
+// Report the treated person
 template<class T> void centerHeap<T>:: report_appointment(centerNode<T>* head_appointment)
 {
     ofstream fout("appointment.txt");
@@ -82,7 +82,7 @@ int centerHeap<T>::go(int waiting,centerNode<T> *node, centerNode<T> *prev, int 
         if (node->child != NULL)
            waiting = go(waiting,node->child, node, 1);
 
-        // 兄弟节点
+        // brother node
         prev = node;
         node = node->right;
         direction = 2;
@@ -90,21 +90,21 @@ int centerHeap<T>::go(int waiting,centerNode<T> *node, centerNode<T> *prev, int 
     return waiting;
 }
 
-/*每月播报*/
+//monthly report
 template<class T> void centerHeap<T>:: month_report()
 {
     ofstream fout("month_report.txt");
     centerNode<T> *tmp_treatment = last_treatment;
     centerNode<T> *tmp_appointment = last_appointment;
-    /*要求print的数据*/
-    int registered = 0;     /*多少人registered ---> 治好+预约+排队*/
-    int waiting = 0;        /*多少人waiting ---> 排队 */
-    int waiting_total = 0;      /*多少人waiting in total ---> 预约+排队*/
-    int appointment = 0;        /*多少人appointment ---> 预约*/
-    int waiting_time = 0;       /*治好的人的平均等待时间*/
-    int withdraw = withdraw_number;          /*多少人withdrew*/
-    /*没要求print的数据*/
-    int treatment = 0;   /*多少人被治疗好*/
+    // data to be printed
+    int registered = 0;     /* How many registered people -- >Cure + reservation + queue */
+    int waiting = 0;        /* How many people waiting -- >Line up */
+    int waiting_total = 0;      /* Waiting in total -- >Reservation + queue */
+    int appointment = 0;        /* How many people are appointed -- >Reservation */
+    int waiting_time = 0;       /* Average waiting time for cured people */
+    int withdraw = withdraw_number;         /* How many people withdraw */
+    //data not required to print
+    int treatment = 0;   // how many people are treated
 
     /*找有多少人被治疗好*/
     while (tmp_treatment != NULL)
@@ -237,7 +237,7 @@ template<class T> void centerHeap<T>:: week_report()
     report_appointment(head_appointment);
     report_treated(head_treatment);
     report_registered(head_waiting);
-    cout << list_numb<<endl;
+    //cout << list_numb<<endl;
 }
 
 
@@ -360,7 +360,7 @@ template<class T> void centerHeap<T>:: Listsort_aging(centerNode<T>*  head)
     
     for (i = 0; i < number + 1 ; i++) 
     {
-        L = head;
+        L = head->parent;
         for (j = 0; j < number - i - 1; j++) 
         {
             //得到两个值
@@ -572,7 +572,7 @@ void centerHeap<T>::listmake(centerNode<T>* N)
     node->parent=last_waiting;
     last_waiting=node;
     list_numb ++;
-    cout << N->key <<endl;
+    //cout << N->key <<endl;
 
 }
 /*template <class T>

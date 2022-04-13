@@ -79,7 +79,7 @@ localQueue<patient*>  build_queue (int i){
         string line;
         while (getline(infile, line)){
             // Prints a full line of strings
-            cout << "each line : " << line << endl;
+            //cout << "each line : " << line << endl;
             patient* pat = new patient();
             // Parse the data for each row
             stringstream ss(line);

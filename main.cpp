@@ -77,9 +77,9 @@ void choice_0(){
             day=0;
 		}
 	}
-	else if(day==2){
+	else if(day==30){
 		if(month==1||month==3||month==5||month==7||month==8||month==10||month==12){
-			center.week_report();
+			
             center.month_report();
 			month++;
             day=0;

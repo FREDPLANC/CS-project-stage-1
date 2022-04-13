@@ -84,7 +84,7 @@ class patient {
 		int loc= -1;    //the location of the patient
 		}
 		patient(const patient &c){
-			cout << c.prof;
+			//cout << c.prof;
 			prof=c.prof;
 			//cout << c.id;
 			id = c.id;
