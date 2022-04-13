@@ -21,11 +21,19 @@ template<class T> void  centerHeap<T>::appointment_process(int date )
     pop_patient_wrtddl(min,date+10);  // The treatment is scheduled one day before DDL, so an appointment is required the day before
     int rest_capacity = capacity_total - content_total;
     for (int i = 0; i < rest_capacity && min != NULL;i++){ // To prevent exceeding the daily capacity of all hospitals combined on that day
-        if(min->risk == 2){
-            if(min->treat_ddl < 0){
-                min->treat_ddl = date + 3000;
+        if((min->risk == 2)||(withdraw_list[min->id] == 1)){
+            if(min->risk == 2){
+                if(min->treat_ddl < 0){
+                    min->treat_ddl = date + 3000;
+                }
+                min->treated_time = date + 3005; 
             }
-            min->treated_time = date + 3005; 
+            else{
+                if(min->treat_ddl < 0){
+                    min->treat_ddl = date + 1400;
+                }
+                min->treated_time = date + 1405; 
+            }
             if(last_mediumRisk == NULL) {
                 last_mediumRisk = min;
                 removeMin();

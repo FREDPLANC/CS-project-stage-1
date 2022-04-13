@@ -127,8 +127,9 @@ int main()
 		printf("1. Skip a week.\n");
 		printf("2. Skip this month.\n");
         printf("3. Show the time.\n");
+        printf("4. End the program.\n");
 		scanf("%d",&choice_user);
-		if(choice_user<0||choice_user>3){
+		if(choice_user<0||choice_user>4){
             printf("Wrong input please try again.\n");
             continue;
         }
@@ -147,6 +148,10 @@ int main()
         else if(choice_user == 3){
             choice_3();
             continue;
+        }
+        else if(choice_user == 4){
+            cout << endl << "Thank you for using our program, goodbye!" << endl;
+            return 0;
         }
     
     
