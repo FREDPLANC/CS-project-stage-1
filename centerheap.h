@@ -115,6 +115,7 @@ template<class T> class centerHeap
         int withdraw_list[1000]; // Check if this ID has ever cancelled a reservation or waited
         int withdraw_number;     // Record the number of people that have been revoked
         int list_numb = 0;
+
         centerNode<T> *min;    // minimum node (the root node of a minimum heap)
         centerNode<T> **cons;    // Maximum memory area
         centerNode<T> *last_appointment; // Double linked list of daily appointments, last_appointment points to the last appointment of the day
@@ -123,6 +124,9 @@ template<class T> class centerHeap
         centerNode<T> *head_treatment;
         centerNode<T> *head_appointment;
         centerNode<T> *head_registered;
+        centerNode<T> *last_mediumRisk;
+        centerNode<T> *head_mediumRisk;
+        centerNode<T> *curnode_mediumRisk;
 
         centerHeap();  //*********************************************************************************************
         ~centerHeap();  //***********************************************************************************************
@@ -135,6 +139,7 @@ template<class T> class centerHeap
         void destroy();  // destroy
         centerNode<T>* search_id(centerNode<T> *root, int id);
         void appointment_process(int date );//process the appoint
+        void mediumRisk_process(int date); //medium risk process;  
         void treatment_process(int date );  // process the treatment
         void pop_patient_wrtddl(centerNode<T> *root, int ddl);
         void withdraw(int id);

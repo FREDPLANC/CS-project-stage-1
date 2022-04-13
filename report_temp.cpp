@@ -217,14 +217,11 @@ template<class T> void centerHeap<T>:: week_report()
     centerNode<T> *head_treatment = new centerNode<T>(last_treatment);
     centerNode<T> *head_waiting = new centerNode<T>(last_treatment);
     set_head(head_appointment,head_treatment,head_waiting);
-
-    //check();
     /*按照年龄排序*/
-    Listsort_aging(head_appointment);
-    Listsort_aging(head_treatment);
-    Listsort_aging(head_waiting);
+    Listsort_aging(last_appointment);
+    Listsort_aging(last_treatment);
+    Listsort_aging(last_waiting);
 
-    //check();
     /*按照职业排序
     Listsort_prof(last_appointment);
     Listsort_prof(last_treatment);
@@ -247,18 +244,13 @@ template<class T> void centerHeap<T>:: week_report()
 /*数出来一个链表里元素的个数*/
 template<class T> int centerHeap<T>:: count_list(centerNode<T> *head)
 {
-    if (head->parent == NULL)
-    {
-        return 0;
-    }
-    
     int counter = 0;
-    centerNode<T> *tmp = head->parent;
-    do
+    centerNode<T> *tmp = head;
+    while (tmp != NULL && tmp->parent != NULL)
     {
         counter++;
         tmp = tmp->parent;
-    }while (tmp != NULL);
+    }
     return counter;
 }
 
@@ -366,7 +358,7 @@ template<class T> void centerHeap<T>:: Listsort_aging(centerNode<T>*  head)
         return;
     }
     
-    for (i = 0; i < number -1 ; i++) 
+    for (i = 0; i < number + 1 ; i++) 
     {
         L = head->parent;
         for (j = 0; j < number - i - 1; j++) 
@@ -501,7 +493,7 @@ template<class T> void centerHeap<T>:: List_registered()
         if (min==NULL)
             return ;
 
-        //listmake(min);
+        listmake(min);
         p = min;
         do {
             i++;
@@ -580,7 +572,6 @@ void centerHeap<T>::listmake(centerNode<T>* N)
     node->parent=last_waiting;
     last_waiting=node;
     list_numb ++;
-    //cout<<last_waiting->id<<endl;
     //cout << N->key <<endl;
 
 }
@@ -610,38 +601,4 @@ centerNode<T>* centerHeap<T>::copy(centerNode<T>* N)
     
     return node;
 }*/
-
-/*template <class T>
-void centerHeap<T>::check()
-{
-    centerNode<T> *tmp1 = head_appointment->parent;
-    centerNode<T> *tmp2 = head_treatment->parent;
-    centerNode<T> *tmp3 = head_registered->parent;
-    int counter = 0;
-    T array[100];
-    while (tmp1!=NULL)
-    {
-        while (tmp2!=NULL)
-        {
-            while (tmp3!=NULL)
-            {
-                if (tmp1->id == tmp2->id || tmp1->id == tmp3->id )
-                {
-                    cout<<tmp1->id<<endl;
-                }
-                if (tmp2->id == tmp3->id)
-                {
-                    cout<<tmp2->id<<endl;
-                }
-                tmp3 = tmp3->parent;
-            }
-            tmp2=tmp2->parent;
-            tmp3 = head_registered->parent;
-        }
-        tmp1 = tmp1->parent;
-        tmp2 = head_treatment->parent;
-        tmp3 = head_registered->parent;
-    }    
-}*/
-
 #endif

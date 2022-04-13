@@ -24,14 +24,14 @@ void centerHeap<T>::build(){//Add local queues to the central heap
     int l3 = Q3.getlength();
     for (int i=1;i<=l1;i++)
     {
-        patient p1=Q1.De_queue() ;
+        patient p1=Q1.De_queue();
         add_patient(p1); //first pop the content of the queue one by one
         
 
     }
     for (int i=1;i<=l2;i++)
     {   
-        patient p2=Q2.De_queue() ;// same for other queues
+        patient p2=Q2.De_queue();// same for other queues
         add_patient(p2);
     }
     for (int i=1;i<=l3;i++)

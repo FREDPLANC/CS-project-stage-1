@@ -32,6 +32,7 @@ void half_day_process(){ // when time flows a day, it needs the following steps
     extern int date_treat;
     date_treat = month*1000 + day*10 + am; // the converted time
     center.build(); // insert the csv daily data;
+    center.mediumRisk_process(date_treat);
     center.treatment_process(date_treat); // treat queue generated
     center.appointment_process(date_treat);  // appointment queue generated
 }
