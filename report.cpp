@@ -12,7 +12,12 @@ using namespace std;
 // Report the treated person
 template<class T> void centerHeap<T>:: report_treated(centerNode<T>* head_treatment)
 {
-    ofstream fout("treated.txt");
+    extern int week_counter;
+
+    string tempstr = to_string(week_counter);
+    tempstr = "treated" + tempstr;
+    tempstr = tempstr + ".txt";
+    ofstream fout(tempstr);
     if (head_treatment->parent == NULL)
     {
         fout.close();
@@ -33,7 +38,11 @@ template<class T> void centerHeap<T>:: report_treated(centerNode<T>* head_treatm
 // Report the treated person
 template<class T> void centerHeap<T>:: report_appointment(centerNode<T>* head_appointment)
 {
-    ofstream fout("appointment.txt");
+    extern int week_counter;
+    string tempstr = to_string(week_counter);
+    tempstr = "appointment" + tempstr;
+    tempstr = tempstr + ".txt";
+    ofstream fout(tempstr);
     if (head_appointment->parent == NULL)
     {
         fout.close();
@@ -50,7 +59,11 @@ template<class T> void centerHeap<T>:: report_appointment(centerNode<T>* head_ap
 
 template<class T> void centerHeap<T>:: report_registered(centerNode<T>* head_waiting)
 {
-    ofstream fout("registered.txt");
+    extern int week_counter;
+    string tempstr = to_string(week_counter);
+    tempstr = "registered" + tempstr;
+    tempstr = tempstr + ".txt";
+    ofstream fout(tempstr);
     if (head_waiting->parent == NULL || min == NULL)
     {
         fout.close();
@@ -93,7 +106,11 @@ int centerHeap<T>::go(int waiting,centerNode<T> *node, centerNode<T> *prev, int 
 //monthly report
 template<class T> void centerHeap<T>:: month_report()
 {
-    ofstream fout("month_report.txt");
+    extern int month_counter;
+    string tempstr = to_string(month_counter);
+    tempstr = "month_report" + tempstr;
+    tempstr = tempstr + ".txt";
+    ofstream fout(tempstr);
     centerNode<T> *tmp_treatment = last_treatment;
     centerNode<T> *tmp_appointment = last_appointment;
     // data to be printed
@@ -192,17 +209,19 @@ template<class T> void centerHeap<T>:: month_report()
         
     }
     */
-    
-    registered = waiting + appointment + treatment;
+    waiting = waiting + count_list(last_mediumRisk) + 1;
+    registered = waiting + appointment + treatment + withdraw_number;
     waiting_total = appointment + waiting;
     
     fout<<"The number of people who have registered is "<<registered<<endl;
     fout<<"The number of people who are waiting is "<<waiting<<endl;
     fout<<"The number of people who are waiting in total is "<<waiting_total<<endl;
-    fout<<"The number of treatment appointment which have been made is "<<appointment<<endl;
+    fout<<"The number of treatment appointment which have been made is "<<total_appointment_num<<endl;
     fout<<"The average waiting time is "<<waiting_time<<endl;
     fout<<"The number of people who withdrew is "<<withdraw<<endl;
     fout.close();
+    extern int month_counter;
+    month_counter++;
 }
 
 
@@ -241,6 +260,8 @@ template<class T> void centerHeap<T>:: week_report()
     report_treated(head_treatment);
     report_registered(head_waiting);
     //cout << list_numb<<endl;
+    extern int week_counter;
+    week_counter++;
 }
 
 
@@ -512,6 +533,14 @@ template<class T> void centerHeap<T>:: List_registered()
             if(p != NULL && p != min) listmake(p);
         } while (p != min);
     }
+
+    centerNode<T> *tmp = last_mediumRisk;
+    while (tmp!=NULL)
+    {
+        listmake(tmp);
+        tmp = tmp->parent;
+    }
+    
     /*if (min == NULL)
     {
         last_waiting = NULL;

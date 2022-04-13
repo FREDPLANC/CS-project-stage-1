@@ -19,8 +19,31 @@ template<class T> void  centerHeap<T>::appointment_process(int date )
 {   extern int capacity_total;
     extern int content_total;
     pop_patient_wrtddl(min,date+10);  // The treatment is scheduled one day before DDL, so an appointment is required the day before
-   int rest_capacity = capacity_total - content_total;
+    int rest_capacity = capacity_total - content_total;
     for (int i = 0; i < rest_capacity && min != NULL;i++){ // To prevent exceeding the daily capacity of all hospitals combined on that day
+        if(min->risk == 2){
+            if(min->treat_ddl < 0){
+                min->treat_ddl = date + 3000;
+            }
+            min->treated_time = date + 3005; 
+            if(last_mediumRisk == NULL) {
+                last_mediumRisk = min;
+                removeMin();
+                last_mediumRisk->child = NULL;
+                curnode_mediumRisk = last_mediumRisk;
+                
+            }
+            else{
+                curnode_mediumRisk->parent = min;
+                removeMin();
+                curnode_mediumRisk->parent->child = curnode_mediumRisk; // the headnode points at the end of the list;
+                curnode_mediumRisk = curnode_mediumRisk->parent;
+                curnode_mediumRisk->parent = NULL;
+                
+            }
+            
+        }
+
         min->treated_time = date + 5;
         min->treated_location = check_nearest(min);
         //total_appointment_num++;
@@ -41,6 +64,48 @@ template<class T> void  centerHeap<T>::appointment_process(int date )
     
     return;
 }
+
+template<class T> void centerHeap<T>::mediumRisk_process(int date)  // Deal with the treatment, add all the patients in the appointment list of the day before yesterday into the treatment list, and clear the appointment list
+{  
+    centerNode<T> *temp;
+    temp = last_mediumRisk;
+    if(temp == NULL){
+        return;
+    }
+    else{
+        while(temp->parent!=NULL){
+            if(temp->treat_ddl == date){
+                last_treatment->child = temp;
+                centerNode<T> *last;
+                centerNode<T> *next;
+                last = temp->child;
+                next = temp->parent;
+                last->parent = next;
+                next->child = last;
+                temp->treated_location = check_nearest(temp);
+                temp = next;
+                last_treatment->child->parent = last_treatment;
+                last_treatment = last_treatment->child;
+            }
+            else{
+                temp = temp->parent;
+            }
+        }
+        if(temp->treat_ddl == date){
+                last_treatment->child = temp;
+                centerNode<T> *last;
+                last = temp->child;
+                last->parent = NULL;
+                last_treatment->child->parent = last_treatment;
+                last_treatment = last_treatment->child;
+        }
+        temp = NULL;
+    }
+    return;
+
+}  
+
+
 template<class T> void centerHeap<T>::treatment_process(int date)  // Deal with the treatment, add all the patients in the appointment list of the day before yesterday into the treatment list, and clear the appointment list
 {  
     centerNode<T> *temp;

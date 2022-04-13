@@ -18,6 +18,8 @@ int day = 1;
 int am = 0;
 int week = 0;
 int date_treat;
+int week_counter = 1;
+int month_counter = 1;
 centerHeap<int> center;
 void choice_0(); // the interactive interface of different choice entered by the user
 void choice_1();
@@ -78,7 +80,7 @@ void choice_0(){
             day=0;
 		}
 	}
-	else if(day==30){
+	else if(day==3){
 		if(month==1||month==3||month==5||month==7||month==8||month==10||month==12){
 			
             center.month_report();
